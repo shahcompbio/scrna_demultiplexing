@@ -14,7 +14,8 @@ process Demultiplex {
     path(gex_fastq)
     path(multiplex_capture_fastq)
   output:
-    path("outdir/*")
+    path("outdir/*bam"), emit: bam_files
+    path("outdir/metrics.csv"), emit: metrics_csv
  script:
     """
         scrna_multiplex_utils cellranger_multi --memory 10 --cores 16 \
@@ -24,17 +25,19 @@ process Demultiplex {
         --cite_fastq $cite_fastq \
         --tempdir tempdir
     """
-
-- bam files
-- metrics
 }
 
 
-// on each cell
-process bamtofastq{
 
 
-}
+// on each bam from multi
+//process bamtofastq{}
+// also needs to look at the input bam file to detect the gex and cite fastqs
+// depends on CO in header
+
+
+
+// run cell ranger vdj with gex+tcr+bcr
 
 
 
