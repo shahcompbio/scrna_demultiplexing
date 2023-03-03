@@ -2,7 +2,7 @@
 
 import click
 
-import vdj_utils.utils as utils
+import scrna_demultiplexing_utils.utils as utils
 
 
 @click.group()
