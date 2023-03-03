@@ -40,11 +40,22 @@ def run_cmd(cmd, output=None):
         stdout.close()
 
 
+def generate_config(cmo_csv, gex_fastq, multiplex_capture_fastq, reference, config_file):
+
+    with open(config_file, 'wt') as writer:
+
+        writer.write('[gene-expression]\n')
+        writer.write(f'reference,{reference}\n')
+        writer.write(f'cmo-set,{cmo_csv}\n')
+
+
+
 def cellranger_multi(
-        csv_file,
-        tempdir,
-        memory,
-        cores
+        reference,
+        cmo_csv,
+        gex_fastq,
+        multiplex_capture_fastq,
+        tempdir
 ):
     cmd = [
         'cellranger', 'multi', '--csv=' + csv_file, '--id=' + tempdir,

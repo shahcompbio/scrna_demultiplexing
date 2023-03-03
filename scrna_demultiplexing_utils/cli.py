@@ -11,20 +11,23 @@ def cli():
 
 
 @cli.command()
-@click.option('--csv', required=True, help='CSV file path')
-@click.option('--memory', required=True, help='memory for cellranger multi')
-@click.option('--cores', required=True, help='cores for cellranger multi')
+@click.option('--reference', required=True, help='CSV file path')
+@click.option('--cmo_csv', required=True, help='memory for cellranger multi')
+@click.option('--gex_fastq', required=True, help='cores for cellranger multi')
+@click.option('--multiplex_capture_fastq', required=True, help='cores for cellranger multi')
 def cellranger_multi(
-        csv_file,
-        tempdir,
-        memory,
-        cores,
+        reference,
+        cmo_csv,
+        gex_fastq,
+        multiplex_capture_fastq,
+        tempdir
 ):
     utils.cellranger_multi(
-        csv_file,
-        tempdir,
-        memory,
-        cores
+        reference,
+        cmo_csv,
+        gex_fastq,
+        multiplex_capture_fastq,
+        tempdir
     )
 
 

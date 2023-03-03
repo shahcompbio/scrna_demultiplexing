@@ -9,31 +9,31 @@ process Demultiplex {
     memory '10 GB'
 
   input:
-    path(demux_csv_file)
-    val(memory)
-    val(cores)
+    path(reference)
+    path(cmo_tsv)
+    path(gex_fastq)
+    path(multiplex_capture_fastq)
   output:
     path("outdir/*")
  script:
     """
-        vdj_utils cellranger_multi --csv $demux_csv_file --memory 10 --cores 8
+        vdj_utils cellranger_multi --memory 10 --cores 8 \
+        --reference $reference \
+        --cmo_tsv $cmo_tsv \
+        --gex_fastq $gex_fastq \
+        --multiplex_capture_fastq $multiplex_capture_fastq
     """
 }
 
 
 workflow{
 
-    chromosomes_ch = Channel.from(params.chromosomes)
-    vcf = Channel.fromPath(params.vcf)
-    vcf_idx = Channel.fromPath(params.vcf_idx)
-    reference_haplotyping_tar = Channel.fromPath(params.ref_tar)
+    reference = Channel.fromPath(params.reference)
+    cmo_tsv = Channel.fromPath(params.cmo_tsv)
+    gex_fastq = Channel.fromPath(params.gex_fastq)
+    multiplex_capture_fastq = Channel.fromPath(params.multiplex_capture_fastq)
 
+    Demultiplex(reference, cmo_tsv_ch, gex_fastq_ch, multiplex_capture_fastq)
 
-    chromosomes_ch | flatten | combine(vcf)|combine(vcf_idx) | BcftoolsConvert | combine(reference_haplotyping_tar) | ShapeIt4
-
-    CsverveConcat(ShapeIt4.out.haps_csv.collect(), ShapeIt4.out.haps_csv_yaml.collect())
-
-    CsverveConcat.out.csv_file.subscribe { it.copyTo(params.out_csv) }
-    CsverveConcat.out.csv_file.subscribe { it.copyTo(params.out_csv_yaml) }
 }
 
