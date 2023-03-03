@@ -17,16 +17,16 @@ def cli():
 @click.option('--multiplex_capture_fastq', required=True, help='cores for cellranger multi')
 def cellranger_multi(
         reference,
-        cmo_csv,
+        meta_yaml,
         gex_fastq,
-        multiplex_capture_fastq,
+        cite_fastq,
         tempdir
 ):
     utils.cellranger_multi(
         reference,
-        cmo_csv,
+        meta_yaml,
         gex_fastq,
-        multiplex_capture_fastq,
+        cite_fastq,
         tempdir
     )
 

@@ -52,14 +52,17 @@ def generate_config(cmo_csv, gex_fastq, multiplex_capture_fastq, reference, conf
 
 def cellranger_multi(
         reference,
-        cmo_csv,
+        meta_yaml,
         gex_fastq,
-        multiplex_capture_fastq,
+        cite_fastq,
         tempdir
 ):
-    cmd = [
-        'cellranger', 'multi', '--csv=' + csv_file, '--id=' + tempdir,
-        '--localcores='+cores, '--localmem='+memory
-    ]
 
-    run_cmd(cmd)
+    ...
+
+    # cmd = [
+    #     'cellranger', 'multi', '--csv=' + csv_file, '--id=' + tempdir,
+    #     '--localcores='+cores, '--localmem='+memory
+    # ]
+    #
+    # run_cmd(cmd)
