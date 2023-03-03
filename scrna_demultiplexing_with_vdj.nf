@@ -30,14 +30,12 @@ process Demultiplex {
 
 
 
-// on each bam from multi
-//process bamtofastq{}
+// on each bam from demultiplex
+//process: bamtofastq{}
 // also needs to look at the input bam file to detect the gex and cite fastqs
 // depends on CO in header
 
-
-
-// run cell ranger vdj with gex+tcr+bcr
+//process: run cell ranger vdj with gex+tcr
 
 
 
