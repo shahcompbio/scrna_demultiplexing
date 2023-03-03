@@ -1,0 +1,7 @@
+FROM quay.io/singlecellpipelinetest/miniconda3:4.12.0
+
+RUN apt-get update && apt-get install -y samtools && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /app && cd /app && wget -O cellranger-7.1.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.1.0.tar.gz?Expires=1677901040&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci03LjEuMC50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2Nzc5MDEwNDB9fX1dfQ__&Signature=g6gqz79el~LmQ8t3qVh4vTAzUpl7j0ii42oeON8kdhJ23BfWuNm5Xx7-R9A7l0k~Vyyp2-AovG0jiqXDjQZKRBx2VhfQ6mdZIxvG1eMCwuU5Xij-Gh1zVJv7E4yFW~5N~b8p34ZLxoyG8e7NNVLJCK7o3td13~q48mplL1n8KuqdtarSmzNLX46epELx8Tp0asvNmU7OfYCkN62GoqnPKHlO4JYKsd4p~HzXPuszvfLlPQYJfB14LpNJ5feBKM-nLFSzOHzfiJ67R~jqBdVU33JUxJXnClJna6Nj55yv~OC-2hP~TDHs1n2QIz6Hrqg3lK1EynKfAcFGFjTJj2~MKA__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" && tar -xvf cellranger-7.1.0.tar.gz && rm -rf /app/cellranger-7.1.0.tar.gz
+
+ENV PATH="${PATH}:/app/cellranger-7.1.0/bin/"
