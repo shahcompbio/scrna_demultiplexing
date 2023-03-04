@@ -43,18 +43,11 @@ def run_cmd(cmd, output=None):
         stdout.close()
 
 
-def get_feature_type_map():
-    return {
-        'gene_expression': 'Gene Expression',
-        'hto': 'Multiplexing Capture',
-        'cite': 'Multiplexing Capture',
-        'tcr': 'VDJ-T',
-    }
-
-
 def create_cmo(metadata, cmo_path):
     data = []
+
     for cmo in metadata['meta']['hashtag']:
+        print(cmo)
         data.append({
             'id': cmo,
             'name': cmo,
@@ -83,28 +76,13 @@ def create_antibodies(metadata, antibodies_path):
 
 
 def create_initial_run_multiconfig(
-        metadata_path,
+        metadata,
         reference,
         cmo_path,
         antibodies_path,
-        multiconfig_path
+        multiconfig_path,
+        fastq_data
 ):
-    feature_type_map = get_feature_type_map()
-
-    metadata = yaml.load(open(metadata_path))
-
-    libraries = {}
-    for file in metadata['files']:
-        fastq_path = os.path.join(os.path.dirname(metadata_path), os.path.dirname(file))
-        fastq_id = metadata['files'][file]['identifier']
-        feature_type = feature_type_map[metadata['files'][file]['type']]
-
-        if fastq_id not in libraries.keys():
-            libraries[fastq_id] = {
-                'fastq_path': fastq_path,
-                'feature_type': feature_type,
-            }
-
     lines = [
         f'[gene-expression]',
         f'reference,{reference}',
@@ -115,9 +93,8 @@ def create_initial_run_multiconfig(
         f'fastq_id,fastqs,feature_types',
     ]
 
-    for fastq_id in libraries:
-        if libraries[fastq_id]['feature_type'] != 'VDJ-T':
-            lines.append(f"{fastq_id},{libraries[fastq_id]['fastq_path']},{libraries[fastq_id]['feature_type']}")
+    for fastq_info in fastq_data:
+        lines.append(f"{fastq_info['id']},{fastq_info['fastq']},{fastq_info['type']}")
 
     lines.append('[samples]'),
     lines.append('sample_id,cmo_ids')
@@ -132,25 +109,47 @@ def cellranger_multi(
         reference,
         meta_yaml,
         gex_fastq,
+        gex_identifier,
         cite_fastq,
-        tempdir
+        cite_identifier,
+        outdir,
+        tempdir,
+        memory=10,
+        cores=16
 ):
     os.makedirs(tempdir)
+    os.makedirs(os.path.join(tempdir, 'configs'))
 
-    cmo_path = os.path.join(tempdir, 'cmo.txt')
-    antibodies_path = os.path.join(tempdir, 'antibodies.txt')
-    multiconfig_path = os.path.join(tempdir, 'multiconfig.txt')
+    cmo_path = os.path.join(tempdir, 'configs', 'cmo.txt')
+    antibodies_path = os.path.join(tempdir, 'configs', 'antibodies.txt')
+    multiconfig_path = os.path.join(tempdir, 'configs', 'multiconfig.txt')
 
-    create_cmo(meta_yaml, cmo_path)
-    create_antibodies(meta_yaml, antibodies_path)
+    metadata = yaml.safe_load(open(meta_yaml, 'rt'))
 
-    create_initial_run_multiconfig(meta_yaml, reference, cmo_path, antibodies_path, multiconfig_path)
+    create_cmo(metadata, cmo_path)
+    create_antibodies(metadata, antibodies_path)
 
-    ...
+    reference = os.path.abspath(reference)
+    cmo_path = os.path.abspath(cmo_path)
+    antibodies_path = os.path.abspath(antibodies_path)
+    gex_fastq = os.path.abspath(gex_fastq)
+    cite_fastq = os.path.abspath(cite_fastq)
 
-    # cmd = [
-    #     'cellranger', 'multi', '--csv=' + csv_file, '--id=' + tempdir,
-    #     '--localcores='+cores, '--localmem='+memory
-    # ]
-    #
-    # run_cmd(cmd)
+    create_initial_run_multiconfig(
+        metadata, reference, cmo_path, antibodies_path, multiconfig_path,
+        [
+            {'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq},
+            {'type': 'Multiplexing Capture', 'id': cite_identifier, 'fastq': cite_fastq}
+        ]
+    )
+
+    cmd = [
+        'cellranger',
+        'multi',
+        '--csv=' + multiconfig_path,
+        '--id=' + outdir,
+        '--localcores=' + str(cores),
+        '--localmem=' + str(memory)
+    ]
+
+    run_cmd(cmd)
