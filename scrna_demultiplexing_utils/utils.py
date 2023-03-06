@@ -1,8 +1,12 @@
 import errno
+import json
 import os
+import shutil
+from glob import glob
 from subprocess import Popen, PIPE
 
 import pandas as pd
+import pysam
 import yaml
 
 
@@ -153,3 +157,67 @@ def cellranger_multi(
     ]
 
     run_cmd(cmd)
+
+
+def read_metrics(metrics):
+    df = pd.read_csv(metrics)
+
+    numcells = df[df['Category'] == 'Cells']
+    numcells = numcells[numcells['Library Type'] == 'Gene Expression']
+    numcells = numcells[numcells['Metric Name'] == 'Cells']
+    numcells = int(numcells['Metric Value'])
+
+    numreads = df[df['Category'] == 'Library']
+    numreads = numreads[numreads['Library Type'] == 'Gene Expression']
+    numreads = numreads[numreads['Grouped By'] == 'Physical library ID']
+    numreads = numreads[numreads['Group Name'] == 'GEX_1']
+    numreads = numreads[numreads['Metric Name'] == 'Number of reads']
+    numreads = str(numreads['Metric Value'].iloc[0])
+    numreads = int(numreads.replace(',', '').strip())
+
+    return numreads, numcells
+
+
+def find_gex_id(bam_file):
+    with pysam.AlignmentFile(bam_file, 'rb') as reader:
+        header = reader.header
+
+    for comment in header['CO']:
+        if not comment.startswith('library_info'):
+            continue
+
+        comment = comment[len('library_info:'):]
+        comment = json.loads(comment)
+
+        print(comment)
+
+        if comment['library_type'] == 'Gene Expression':
+            return comment['library_id'], comment['gem_group']
+
+    raise Exception()
+
+
+def find_fastqs_to_use(tempdir, library_id, gem_group):
+    files = glob(f'{tempdir}/output_{library_id}_{gem_group}*/*')
+
+    assert len(set([os.path.basename(v) for v in files])) == len(files)
+
+    return files
+
+
+def bam_to_fastq(bam_file, metrics, outdir, tempdir):
+    os.makedirs(outdir)
+    # os.makedirs(tempdir)
+
+    num_reads, num_cells = read_metrics(metrics)
+
+    library_id, gem_group = find_gex_id(bam_file)
+
+    cmd = ['bamtofastq', f'--reads-per-fastq={num_reads+1000000}', bam_file, tempdir]
+
+    run_cmd(cmd)
+
+    fastqs = find_fastqs_to_use(tempdir, library_id, gem_group)
+
+    for fastq in fastqs:
+        shutil.copyfile(fastq, os.path.join(outdir, os.path.basename(fastq)))

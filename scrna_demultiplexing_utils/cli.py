@@ -42,5 +42,19 @@ def cellranger_multi(
     )
 
 
+@cli.command()
+@click.option('--bam_file', required=True, help='CSV file path')
+@click.option('--metrics', required=True, help='CSV file path')
+@click.option('--outdir', required=True, help='CSV file path')
+@click.option('--tempdir', required=True, help='CSV file path')
+def bam_to_fastq(bam_file, metrics, outdir, tempdir):
+    utils.bam_to_fastq(
+        bam_file,
+        metrics,
+        outdir,
+        tempdir
+    )
+
+
 if __name__ == "__main__":
     cli()

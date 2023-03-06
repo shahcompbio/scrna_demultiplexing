@@ -16,8 +16,9 @@ process Demultiplex {
     path(cite_fastq, stageAs: "?/2/*")
     val(cite_id)
   output:
-    path("outdir/*bam"), emit: bam_files
-    path("outdir/metrics.csv"), emit: metrics_csv
+    path("output/outs/per_sample_outs/*/count/sample_alignments.bam"), emit: bam_files
+    path("output/outs/per_sample_outs/*/count/sample_alignments.bam.bai"), emit: bai_files
+    path("output/outs/per_sample_outs/*/metrics_summary.csv"), emit: metrics_csv
  script:
     """
         scrna_demultiplexing_utils cellranger-multi \
