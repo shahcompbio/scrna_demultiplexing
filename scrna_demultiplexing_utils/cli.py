@@ -19,7 +19,10 @@ def cli():
 @click.option('--cite_id', required=True, help='cores for cellranger multi')
 @click.option('--outdir', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
-
+@click.option('--numcores', required=True, help='cores for cellranger multi')
+@click.option('--mempercore', required=True, help='cores for cellranger multi')
+@click.option('--maxjobs', required=True, help='cores for cellranger multi')
+@click.option('--jobmode', required=True, help='cores for cellranger multi')
 def cellranger_multi(
         reference,
         meta_yaml,
@@ -28,7 +31,11 @@ def cellranger_multi(
         cite_fastq,
         cite_id,
         outdir,
-        tempdir
+        tempdir,
+        numcores=16,
+        mempercore=10,
+        maxjobs=200,
+        jobmode='local'
 ):
     utils.cellranger_multi(
         reference,
@@ -38,7 +45,60 @@ def cellranger_multi(
         cite_fastq,
         cite_id,
         outdir,
-        tempdir
+        tempdir,
+        numcores=numcores,
+        mempercore=mempercore,
+        maxjobs=maxjobs,
+        jobmode=jobmode
+    )
+
+
+@cli.command()
+@click.option('--reference', required=True, help='CSV file path')
+@click.option('--feature_reference', required=True, help='CSV file path')
+@click.option('--vdj_reference', required=True, help='CSV file path')
+@click.option('--gex_fastq', required=True, help='cores for cellranger multi')
+@click.option('--gex_id', required=True, help='cores for cellranger multi')
+@click.option('--gex_metrics', required=True, help='cores for cellranger multi')
+@click.option('--tcr_fastq', required=True, help='cores for cellranger multi')
+@click.option('--tcr_id', required=True, help='cores for cellranger multi')
+@click.option('--outdir', required=True, help='cores for cellranger multi')
+@click.option('--tempdir', required=True, help='cores for cellranger multi')
+@click.option('--numcores', required=True, help='cores for cellranger multi')
+@click.option('--mempercore', required=True, help='cores for cellranger multi')
+@click.option('--maxjobs', required=True, help='cores for cellranger multi')
+@click.option('--jobmode', required=True, help='cores for cellranger multi')
+def cellranger_multi_vdj(
+        reference,
+        feature_reference,
+        vdj_reference,
+        gex_fastq,
+        gex_id,
+        gex_metrics,
+        tcr_fastq,
+        tcr_id,
+        outdir,
+        tempdir,
+        numcores=16,
+        mempercore=10,
+        maxjobs=200,
+        jobmode='local'
+):
+    utils.cellranger_multi_vdj(
+        reference,
+        feature_reference,
+        vdj_reference,
+        gex_fastq,
+        gex_id,
+        gex_metrics,
+        tcr_fastq,
+        tcr_id,
+        outdir,
+        tempdir,
+        numcores=numcores,
+        mempercore=mempercore,
+        maxjobs=maxjobs,
+        jobmode=jobmode
     )
 
 

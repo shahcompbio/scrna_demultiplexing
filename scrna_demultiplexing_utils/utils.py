@@ -118,8 +118,10 @@ def cellranger_multi(
         cite_identifier,
         outdir,
         tempdir,
-        memory=10,
-        cores=16
+        numcores=16,
+        mempercore=10,
+        maxjobs=200,
+        jobmode='local'
 ):
     os.makedirs(tempdir)
     os.makedirs(os.path.join(tempdir, 'configs'))
@@ -152,8 +154,95 @@ def cellranger_multi(
         'multi',
         '--csv=' + multiconfig_path,
         '--id=' + outdir,
-        '--localcores=' + str(cores),
-        '--localmem=' + str(memory)
+        f'--localcores={numcores}',
+        f'--localmem={mempercore}',
+        f'--maxjobs={maxjobs}',
+        f'--mempercore={mempercore}',
+        f'--jobmode={jobmode}',
+        '--disable-ui'
+    ]
+
+    run_cmd(cmd)
+
+
+def create_vdj_run_multiconfig(
+        reference,
+        feature_reference,
+        vdj_reference,
+        multiconfig_path,
+        fastq_data,
+        gex_metrics
+):
+    numreads, numcells = read_metrics(gex_metrics)
+
+    lines = [
+        f'[gene-expression]',
+        f'reference,{reference}',
+        f'force-cells,{numcells}',
+        f'check-library-compatibility,false',
+        f'[feature]',
+        f'reference,{feature_reference}',
+        f'[vdj]',
+        f'reference,{vdj_reference}',
+        f'[libraries]',
+        f'fastq_id,fastqs,feature_types',
+    ]
+
+    for fastq_info in fastq_data:
+        lines.append(f"{fastq_info['id']},{fastq_info['fastq']},{fastq_info['type']}")
+
+    with open(multiconfig_path, 'w') as f:
+        f.writelines('\n'.join(lines))
+
+
+def cellranger_multi_vdj(
+        reference,
+        feature_reference,
+        vdj_reference,
+        gex_fastq,
+        gex_identifier,
+        gex_metrics,
+        tcr_fastq,
+        tcr_identifier,
+        outdir,
+        tempdir,
+        numcores=16,
+        mempercore=10,
+        maxjobs=200,
+        jobmode='local'
+):
+    os.makedirs(tempdir)
+    os.makedirs(os.path.join(tempdir, 'configs'))
+
+    multiconfig_path = os.path.join(tempdir, 'configs', 'multiconfig.txt')
+
+    reference = os.path.abspath(reference)
+    feature_reference = os.path.abspath(feature_reference)
+    vdj_reference = os.path.abspath(vdj_reference)
+
+    gex_fastq = os.path.abspath(gex_fastq)
+    tcr_fastq = os.path.abspath(tcr_fastq)
+
+    create_vdj_run_multiconfig(
+        reference, feature_reference, vdj_reference, multiconfig_path,
+        [
+            {'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq},
+            {'type': 'VDJ-T', 'id': tcr_identifier, 'fastq': tcr_fastq}
+        ],
+        gex_metrics
+    )
+
+    cmd = [
+        'cellranger',
+        'multi',
+        '--csv=' + multiconfig_path,
+        '--id=' + outdir,
+        f'--localcores={numcores}',
+        f'--localmem={mempercore}',
+        f'--mempercore={mempercore}',
+        f'--maxjobs={maxjobs}',
+        f'--jobmode={jobmode}',
+        '--disable-ui'
     ]
 
     run_cmd(cmd)
@@ -207,7 +296,6 @@ def find_fastqs_to_use(tempdir, library_id, gem_group):
 
 def bam_to_fastq(bam_file, metrics, outdir, tempdir):
     os.makedirs(outdir)
-    # os.makedirs(tempdir)
 
     num_reads, num_cells = read_metrics(metrics)
 

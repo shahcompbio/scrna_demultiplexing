@@ -5,7 +5,7 @@ nextflow.enable.dsl=2
 
 process Demultiplex {
     time '96h'
-    cpus 16
+    cpus 1
     memory '10 GB'
 
   input:
@@ -29,15 +29,23 @@ process Demultiplex {
         --cite_fastq $cite_fastq \
         --cite_id $cite_id \
         --outdir output \
-        --tempdir temp
+        --tempdir temp \
+        --numcores 16 \
+        --mempercore 10 \
+        --jobmode lsf \
+        --maxjobs 2000
     """
 }
 
 process BamToFastq{
+    time '96h'
+    cpus 1
+    memory '10 GB'
+
     input:
         tuple(path(bam_file), path(bai_file), path(metrics))
     output:
-        path("output/*")
+        path("output")
     script:
     """
         scrna_demultiplexing_utils bam-to-fastq \
@@ -50,12 +58,34 @@ process BamToFastq{
 }
 
 
+process CellRangerMultiVdj{
+    time '96h'
+    cpus 1
+    memory '10 GB'
 
-
-// on each bam from demultiplex
-//process: bamtofastq{}
-// also needs to look at the input bam file to detect the gex and cite fastqs
-// depends on CO in header
+    input:
+        tuple(path(gex_fastq), path(gex_metrics), path(tcr_fastq), val(tcr_id), path(reference), path(feature_reference), path(vdj_reference))
+    output:
+        path("*")
+    script:
+    """
+        scrna_demultiplexing_utils  cellranger-multi-vdj \
+        --reference $reference \
+        --feature_reference $feature_reference \
+        --vdj_reference $vdj_reference \
+        --gex_fastq $gex_fastq \
+        --gex_id bamtofastq \
+        --gex_metrics $gex_metrics \
+        --tcr_fastq $tcr_fastq \
+        --tcr_id $tcr_id \
+        --outdir cellranger_output \
+        --tempdir temp \
+        --numcores 16 \
+        --mempercore 10 \
+        --jobmode lsf \
+        --maxjobs 2000
+    """
+}
 
 //process: run cell ranger vdj with gex+tcr
 
@@ -64,19 +94,25 @@ process BamToFastq{
 workflow{
 
     reference = Channel.fromPath(params.reference)
+    feature_reference = Channel.fromPath(params.feature_reference)
+    vdj_reference = Channel.fromPath(params.vdj_reference)
     meta_yaml = Channel.fromPath(params.meta_yaml)
     gex_fastq = Channel.fromPath(params.gex_fastq)
+    gex_id = params.gex_id
     cite_fastq = Channel.fromPath(params.cite_fastq)
+    cite_id = params.cite_id
+    tcr_fastq = Channel.fromPath(params.tcr_fastq)
+    tcr_id = params.tcr_id
 
-    Demultiplex(reference, meta_yaml, gex_fastq, params.gex_id, cite_fastq, params.cite_id) | set{sample_outs}
+    Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id) | set{sample_outs}
 
     sample_outs.bam_files | flatten | set{bams}
     sample_outs.bai_files | flatten | set{bais}
     sample_outs.metrics | flatten | set{metrics}
 
+    bams | merge(bais)| merge(metrics) | BamToFastq | set{gex_fastqs}
 
-    bams | merge(bais)| merge(metrics) | BamToFastq
-
+    gex_fastqs | flatten | merge(metrics) | combine(tcr_fastq) | combine([tcr_id])| combine(reference) | combine(feature_reference) | combine(vdj_reference) | CellRangerMultiVdj
 
 }
 
