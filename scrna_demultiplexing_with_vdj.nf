@@ -69,6 +69,8 @@ process CellRangerMultiVdj{
         path("*")
     script:
     """
+        which cellranger
+
         scrna_demultiplexing_utils  cellranger-multi-vdj \
         --reference $reference \
         --feature_reference $feature_reference \
