@@ -254,7 +254,8 @@ def read_metrics(metrics):
     numcells = df[df['Category'] == 'Cells']
     numcells = numcells[numcells['Library Type'] == 'Gene Expression']
     numcells = numcells[numcells['Metric Name'] == 'Cells']
-    numcells = int(numcells['Metric Value'])
+    numcells = str(numcells['Metric Value'].iloc[0])
+    numcells = int(numcells.replace(',','').strip())
 
     numreads = df[df['Category'] == 'Library']
     numreads = numreads[numreads['Library Type'] == 'Gene Expression']
