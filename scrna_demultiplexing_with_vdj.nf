@@ -16,9 +16,10 @@ process Demultiplex {
     path(cite_fastq, stageAs: "?/2/*")
     val(cite_id)
   output:
-    path("output/outs/per_sample_outs/*/count/sample_alignments.bam"), emit: bam_files
-    path("output/outs/per_sample_outs/*/count/sample_alignments.bam.bai"), emit: bai_files
-    path("output/outs/per_sample_outs/*/metrics_summary.csv"), emit: metrics
+    path("demultiplex_output/outs/per_sample_outs/*/count/sample_alignments.bam"), emit: bam_files
+    path("demultiplex_output/outs/per_sample_outs/*/count/sample_alignments.bam.bai"), emit: bai_files
+    path("demultiplex_output/outs/per_sample_outs/*/metrics_summary_annotated.csv"), emit: metrics
+    path("demultiplex_output"), emit: output_dir
  script:
     """
         scrna_demultiplexing_utils cellranger-multi \
@@ -28,7 +29,7 @@ process Demultiplex {
         --gex_id $gex_id \
         --cite_fastq $cite_fastq \
         --cite_id $cite_id \
-        --outdir output \
+        --outdir demultiplex_output \
         --tempdir temp \
         --numcores 16 \
         --mempercore 10 \
@@ -66,7 +67,7 @@ process CellRangerMultiVdj{
     input:
         tuple(path(gex_fastq), path(gex_metrics), path(tcr_fastq), val(tcr_id), path(reference), path(feature_reference), path(vdj_reference))
     output:
-        path("*")
+        path("cellranger_output/*"), emit: output_dir
     script:
     """
         which cellranger
@@ -105,6 +106,7 @@ workflow{
     cite_id = params.cite_id
     tcr_fastq = Channel.fromPath(params.tcr_fastq)
     tcr_id = params.tcr_id
+    output_dir = params.output_dir
 
     Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id) | set{sample_outs}
 
@@ -115,6 +117,10 @@ workflow{
     bams | merge(bais)| merge(metrics) | BamToFastq | set{gex_fastqs}
 
     gex_fastqs | flatten | merge(metrics) | combine(tcr_fastq) | combine([tcr_id])| combine(reference) | combine(feature_reference) | combine(vdj_reference) | CellRangerMultiVdj
+
+    sample_outs.output_dir.subscribe{it.copyTo(output_dir + "/cellranger_initial_demultiplex")}
+
+    CellRangerMultiVdj.out.output_dir.subscribe{ it.copyTo(output_dir + "/cellranger_vdj") }
 
 }
 

@@ -164,6 +164,24 @@ def cellranger_multi(
 
     run_cmd(cmd)
 
+    bam_dirs = glob(f'{outdir}/outs/per_sample_outs/*')
+
+    for bam_dir in bam_dirs:
+        sampleid = os.path.basename(bam_dir)
+        metrics = os.path.join(bam_dir, 'metrics_summary.csv')
+
+        df = pd.read_csv(metrics)
+
+        df = df.append({
+            'Category': 'Library',
+            'Metric Name': 'Sample Id',
+            'Metric Value': sampleid
+        },
+        ignore_index=True)
+
+        df.to_csv(os.path.join(bam_dir, 'metrics_summary_annotated.csv'), index=False)
+
+
 
 def create_vdj_run_multiconfig(
         reference,
@@ -173,7 +191,7 @@ def create_vdj_run_multiconfig(
         fastq_data,
         gex_metrics
 ):
-    numreads, numcells = read_metrics(gex_metrics)
+    numreads, numcells, sample_id = read_metrics(gex_metrics)
 
     lines = [
         f'[gene-expression]',
@@ -214,6 +232,9 @@ def cellranger_multi_vdj(
     os.makedirs(tempdir)
     os.makedirs(os.path.join(tempdir, 'configs'))
 
+
+    numreads, numcells, sample_id = read_metrics(gex_metrics)
+
     multiconfig_path = os.path.join(tempdir, 'configs', 'multiconfig.txt')
 
     reference = os.path.abspath(reference)
@@ -236,7 +257,7 @@ def cellranger_multi_vdj(
         'cellranger',
         'multi',
         '--csv=' + multiconfig_path,
-        '--id=' + outdir,
+        '--id=' + sample_id,
         f'--localcores={numcores}',
         f'--localmem={mempercore}',
         f'--mempercore={mempercore}',
@@ -246,6 +267,9 @@ def cellranger_multi_vdj(
     ]
 
     run_cmd(cmd)
+
+    os.rename(sample_id, f'{outdir}/{sample_id}')
+
 
 
 def read_metrics(metrics):
@@ -265,7 +289,11 @@ def read_metrics(metrics):
     numreads = str(numreads['Metric Value'].iloc[0])
     numreads = int(numreads.replace(',', '').strip())
 
-    return numreads, numcells
+    sample_id = df[df['Category'] == 'Library']
+    sample_id = sample_id[sample_id['Metric Name'] == 'Sample Id']
+    sample_id = str(sample_id['Metric Value'].iloc[0])
+
+    return numreads, numcells, sample_id
 
 
 def find_gex_id(bam_file):
@@ -298,7 +326,7 @@ def find_fastqs_to_use(tempdir, library_id, gem_group):
 def bam_to_fastq(bam_file, metrics, outdir, tempdir):
     os.makedirs(outdir)
 
-    num_reads, num_cells = read_metrics(metrics)
+    num_reads, num_cells, sample_id = read_metrics(metrics)
 
     library_id, gem_group = find_gex_id(bam_file)
 
