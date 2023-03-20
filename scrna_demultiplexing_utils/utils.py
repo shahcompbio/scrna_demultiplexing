@@ -268,10 +268,6 @@ def cellranger_multi_vdj(
 
     run_cmd(cmd)
 
-    os.rename(sample_id, f'{outdir}/{sample_id}')
-
-
-
     os.makedirs(outdir)
 
     os.rename(sample_id, f'{outdir}/{sample_id}')
