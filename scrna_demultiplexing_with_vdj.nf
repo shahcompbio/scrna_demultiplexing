@@ -130,7 +130,6 @@ workflow{
     cite_id = params.cite_id
     tcr_fastq = Channel.fromPath(params.tcr_fastq)
     tcr_id = params.tcr_id
-    output_dir = params.output_dir
 
     Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id) | set{sample_outs}
 
