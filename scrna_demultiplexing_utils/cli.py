@@ -62,6 +62,8 @@ def cellranger_multi(
 @click.option('--gex_metrics', required=True, help='cores for cellranger multi')
 @click.option('--tcr_fastq', required=True, help='cores for cellranger multi')
 @click.option('--tcr_id', required=True, help='cores for cellranger multi')
+@click.option('--cite_fastq', required=True, help='cores for cellranger multi')
+@click.option('--cite_id', required=True, help='cores for cellranger multi')
 @click.option('--outdir', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
 @click.option('--numcores', required=True, help='cores for cellranger multi')
@@ -77,6 +79,8 @@ def cellranger_multi_vdj(
         gex_metrics,
         tcr_fastq,
         tcr_id,
+        cite_fastq,
+        cite_id,
         outdir,
         tempdir,
         numcores=16,
@@ -93,6 +97,8 @@ def cellranger_multi_vdj(
         gex_metrics,
         tcr_fastq,
         tcr_id,
+        cite_fastq,
+        cite_id,
         outdir,
         tempdir,
         numcores=numcores,

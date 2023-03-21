@@ -65,7 +65,7 @@ process CellRangerMultiVdj{
     memory '10 GB'
 
     input:
-        tuple(path(gex_fastq), path(gex_metrics), path(tcr_fastq), val(tcr_id), path(reference), path(feature_reference), path(vdj_reference))
+        tuple(path(gex_fastq), path(gex_metrics), path(tcr_fastq), val(tcr_id),path(cite_fastq), val(cite_id), path(reference), path(feature_reference), path(vdj_reference))
     output:
         path("cellranger_output/*"), emit: output_dir
     script:
@@ -81,6 +81,8 @@ process CellRangerMultiVdj{
         --gex_metrics $gex_metrics \
         --tcr_fastq $tcr_fastq \
         --tcr_id $tcr_id \
+        --cite_fastq $cite_fastq \
+        --cite_id $cite_id \
         --outdir cellranger_output \
         --tempdir temp \
         --numcores 16 \
@@ -139,7 +141,7 @@ workflow{
 
     bams | merge(bais)| merge(metrics) | BamToFastq | set{gex_fastqs}
 
-    gex_fastqs | flatten | merge(metrics) | combine(tcr_fastq) | combine([tcr_id])| combine(reference) | combine(feature_reference) | combine(vdj_reference) | CellRangerMultiVdj
+    gex_fastqs | flatten | merge(metrics) | combine(tcr_fastq) | combine([tcr_id])|combine(cite_fastq) | combine([cite_id])| combine(reference) | combine(feature_reference) | combine(vdj_reference) | CellRangerMultiVdj
 
     VdjOutput(CellRangerMultiVdj.out.output_dir)
     DemultiOutput(Demultiplex.out.output_dir)

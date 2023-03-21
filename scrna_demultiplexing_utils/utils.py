@@ -222,6 +222,8 @@ def cellranger_multi_vdj(
         gex_metrics,
         tcr_fastq,
         tcr_identifier,
+        cite_fastq,
+        cite_identifier,
         outdir,
         tempdir,
         numcores=16,
@@ -248,6 +250,7 @@ def cellranger_multi_vdj(
         reference, feature_reference, vdj_reference, multiconfig_path,
         [
             {'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq},
+            {'type': 'Antibody Capture', 'id': cite_identifier, 'fastq': cite_fastq}
             {'type': 'VDJ-T', 'id': tcr_identifier, 'fastq': tcr_fastq}
         ],
         gex_metrics
