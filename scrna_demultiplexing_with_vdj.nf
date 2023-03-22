@@ -65,7 +65,7 @@ process CellRangerMultiVdj{
     memory '10 GB'
 
     input:
-        tuple(path(gex_fastq), path(gex_metrics), path(tcr_fastq), val(tcr_id),path(cite_fastq), val(cite_id), path(reference), path(feature_reference), path(vdj_reference))
+        tuple(path(gex_fastq, stageAs: "?/1/*"), path(gex_metrics), path(tcr_fastq), val(tcr_id),path(cite_fastq, stageAs: "?/1/*"), val(cite_id), path(reference), path(feature_reference), path(vdj_reference))
     output:
         path("cellranger_output/*"), emit: output_dir
     script:
