@@ -4,9 +4,9 @@ nextflow.enable.dsl=2
 
 
 process Demultiplex {
-    time '6h'
+    time '96h'
     cpus 1
-    memory '5 GB'
+    memory '10 GB'
 
   input:
     path(reference)
