@@ -237,6 +237,10 @@ def cellranger_multi_vdj(
 
     numreads, numcells, sample_id = read_metrics(gex_metrics)
 
+    if numcells == 0:
+        os.makedirs(outdir)
+        return
+
     multiconfig_path = os.path.join(tempdir, 'configs', 'multiconfig.txt')
 
     reference = os.path.abspath(reference)
