@@ -249,6 +249,7 @@ def cellranger_multi_vdj(
 
     gex_fastq = os.path.abspath(gex_fastq)
     tcr_fastq = os.path.abspath(tcr_fastq)
+    cite_fastq = os.path.abspath(cite_fastq)
 
     create_vdj_run_multiconfig(
         reference, feature_reference, vdj_reference, multiconfig_path,
