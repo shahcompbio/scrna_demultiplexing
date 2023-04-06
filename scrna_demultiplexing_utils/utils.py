@@ -164,6 +164,9 @@ def cellranger_multi(
 
     run_cmd(cmd)
 
+    excluded_sample_dir = os.path.join(outdir, 'excluded_samples')
+    os.makedirs(excluded_sample_dir)
+
     bam_dirs = glob(f'{outdir}/outs/per_sample_outs/*')
 
     for bam_dir in bam_dirs:
@@ -177,10 +180,13 @@ def cellranger_multi(
             'Metric Name': 'Sample Id',
             'Metric Value': sampleid
         },
-        ignore_index=True)
+            ignore_index=True)
 
         df.to_csv(os.path.join(bam_dir, 'metrics_summary_annotated.csv'), index=False)
 
+        num_reads, num_cells, sample_id = read_metrics(os.path.join(bam_dir, 'metrics_summary_annotated.csv'))
+        if num_cells == 0:
+            os.rename(bam_dir, os.path.join(excluded_sample_dir, sampleid))
 
 
 def create_vdj_run_multiconfig(
@@ -234,11 +240,11 @@ def cellranger_multi_vdj(
     os.makedirs(tempdir)
     os.makedirs(os.path.join(tempdir, 'configs'))
 
-
     numreads, numcells, sample_id = read_metrics(gex_metrics)
 
     if numcells == 0:
         os.makedirs(outdir)
+        os.makedirs(os.path.join(outdir, 'ZEROCELLS'))
         return
 
     multiconfig_path = os.path.join(tempdir, 'configs', 'multiconfig.txt')
@@ -281,7 +287,6 @@ def cellranger_multi_vdj(
     os.rename(sample_id, f'{outdir}/{sample_id}')
 
 
-
 def read_metrics(metrics):
     df = pd.read_csv(metrics)
 
@@ -289,7 +294,7 @@ def read_metrics(metrics):
     numcells = numcells[numcells['Library Type'] == 'Gene Expression']
     numcells = numcells[numcells['Metric Name'] == 'Cells']
     numcells = str(numcells['Metric Value'].iloc[0])
-    numcells = int(numcells.replace(',','').strip())
+    numcells = int(numcells.replace(',', '').strip())
 
     numreads = df[df['Category'] == 'Library']
     numreads = numreads[numreads['Library Type'] == 'Gene Expression']
@@ -326,7 +331,7 @@ def find_gex_id(bam_file):
 
 
 def find_fastqs_to_use(tempdir, library_id, gem_group):
-    files = glob(f'{tempdir}/*_{library_id}_{gem_group}*/*')
+    files = glob(f'{tempdir}/*_{library_id}_{gem_group}*')
 
     assert len(set([os.path.basename(v) for v in files])) == len(files)
 
@@ -344,10 +349,7 @@ def bam_to_fastq(bam_file, metrics, outdir, tempdir):
 
     run_cmd(cmd)
 
-
     fastqs = find_fastqs_to_use(tempdir, library_id, gem_group)
 
-
-
     for fastq in fastqs:
-        shutil.copyfile(fastq, os.path.join(outdir, os.path.basename(fastq)))
+        os.rename(fastq, os.path.join(outdir, os.path.basename(fastq)))
