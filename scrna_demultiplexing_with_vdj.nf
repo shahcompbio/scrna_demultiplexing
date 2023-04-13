@@ -96,7 +96,7 @@ process CellRangerMultiVdj{
 
 
 process VdjOutput {
-    publishDir "${params.vdj_output_dir}", mode: 'copy', overwrite: true
+    publishDir "${params.vdj_output_dir}", mode: 'copyNoFollow', overwrite: true, failOnError: true, pattern:"*"
     input:
         path output_dir
     output:
