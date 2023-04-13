@@ -96,7 +96,7 @@ process CellRangerMultiVdj{
 
 
 process VdjOutput {
-    publishDir "${params.vdj_output_dir}", mode: 'move'
+    publishDir "${params.vdj_output_dir}", mode: 'copy', overwrite: true
     input:
         path output_dir
     output:
@@ -107,7 +107,7 @@ process VdjOutput {
 }
 
 process DemultiOutput {
-    publishDir "${params.demultiplex_output_dir}", mode: 'move'
+    publishDir "${params.demultiplex_output_dir}", mode: 'copyNoFollow', overwrite: true, failOnError: true, pattern:"*"
     input:
         path output_dir
     output:
@@ -146,4 +146,3 @@ workflow{
     VdjOutput(CellRangerMultiVdj.out.output_dir)
     DemultiOutput(Demultiplex.out.output_dir)
 }
-
