@@ -119,7 +119,6 @@ workflow{
     Demultiplex.out.tar_output.subscribe{it.copyTo(params.demultiplex_output_tar)}
 
 
-or j
     if(params.tcr_fastq){
         Demultiplex.out.per_sample_data | flatten | BamToFastq
 
