@@ -2,12 +2,18 @@ import errno
 import json
 import os
 import shutil
+import tarfile
 from glob import glob
 from subprocess import Popen, PIPE
 
 import pandas as pd
 import pysam
 import yaml
+
+
+def make_tarfile(output_filename, source_dir):
+    with tarfile.open(output_filename, "w:gz") as tar:
+        tar.add(source_dir, arcname=os.path.basename(source_dir))
 
 
 def makedirs(directory, isfile=False):
@@ -103,7 +109,9 @@ def create_initial_run_multiconfig(
     lines.append('[samples]'),
     lines.append('sample_id,cmo_ids')
     for hashtag in metadata['meta']['hashtag'].keys():
-        lines.append(f"{metadata['meta']['hashtag'][hashtag]['sample_id']},{hashtag}")
+        sampleid = metadata['meta']['hashtag'][hashtag]['sample_id']
+        sampleid = sampleid.replace('#', '_')
+        lines.append(f"{sampleid},{hashtag}")
 
     with open(multiconfig_path, 'w') as f:
         f.writelines('\n'.join(lines))
@@ -117,23 +125,19 @@ def cellranger_multi(
         cite_fastq,
         cite_identifier,
         outdir,
+        tar_output,
         tempdir,
         numcores=16,
         mempercore=10,
         maxjobs=200,
         jobmode='local'
 ):
-    os.makedirs(tempdir)
-    os.makedirs(os.path.join(tempdir, 'configs'))
+    config_dir = os.path.join(tempdir, 'configs')
+    cmo_path = os.path.join(config_dir, 'cmo.txt')
+    antibodies_path = os.path.join(config_dir, 'antibodies.txt')
+    multiconfig_path = os.path.join(config_dir, 'multiconfig.txt')
 
-    cmo_path = os.path.join(tempdir, 'configs', 'cmo.txt')
-    antibodies_path = os.path.join(tempdir, 'configs', 'antibodies.txt')
-    multiconfig_path = os.path.join(tempdir, 'configs', 'multiconfig.txt')
-
-    metadata = yaml.safe_load(open(meta_yaml, 'rt'))
-
-    create_cmo(metadata, cmo_path)
-    create_antibodies(metadata, antibodies_path)
+    run_dir = os.path.join(tempdir, 'run_dir')
 
     reference = os.path.abspath(reference)
     cmo_path = os.path.abspath(cmo_path)
@@ -141,6 +145,14 @@ def cellranger_multi(
     gex_fastq = os.path.abspath(gex_fastq)
     cite_fastq = os.path.abspath(cite_fastq)
 
+    os.makedirs(tempdir)
+    os.makedirs(config_dir)
+    os.makedirs(outdir)
+
+    metadata = yaml.safe_load(open(meta_yaml, 'rt'))
+
+    create_cmo(metadata, cmo_path)
+    create_antibodies(metadata, antibodies_path)
     create_initial_run_multiconfig(
         metadata, reference, cmo_path, antibodies_path, multiconfig_path,
         [
@@ -149,11 +161,13 @@ def cellranger_multi(
         ]
     )
 
+
+    multiconfig_path = os.path.abspath(multiconfig_path)
     cmd = [
         'cellranger',
         'multi',
         '--csv=' + multiconfig_path,
-        '--id=' + outdir,
+        '--id=' + 'run_dir',
         f'--localcores={numcores}',
         f'--localmem={mempercore}',
         f'--maxjobs={maxjobs}',
@@ -161,32 +175,39 @@ def cellranger_multi(
         f'--jobmode={jobmode}',
         '--disable-ui'
     ]
-
+    cwd = os.getcwd()
+    os.chdir(tempdir)
     run_cmd(cmd)
+    os.chdir(cwd)
 
-    excluded_sample_dir = os.path.join(outdir, 'excluded_samples')
-    os.makedirs(excluded_sample_dir)
+    # create a tar for output
+    make_tarfile(tar_output, run_dir)
 
-    bam_dirs = glob(f'{outdir}/outs/per_sample_outs/*')
-
+    bam_dirs = glob(f'{run_dir}/outs/per_sample_outs/*')
     for bam_dir in bam_dirs:
         sampleid = os.path.basename(bam_dir)
-        metrics = os.path.join(bam_dir, 'metrics_summary.csv')
-
-        df = pd.read_csv(metrics)
-
-        df = df.append({
-            'Category': 'Library',
-            'Metric Name': 'Sample Id',
-            'Metric Value': sampleid
-        },
-            ignore_index=True)
-
-        df.to_csv(os.path.join(bam_dir, 'metrics_summary_annotated.csv'), index=False)
-
-        num_reads, num_cells, sample_id = read_metrics(os.path.join(bam_dir, 'metrics_summary_annotated.csv'))
+        num_reads, num_cells = read_metrics(os.path.join(bam_dir, 'metrics_summary.csv'))
         if num_cells == 0:
-            os.rename(bam_dir, os.path.join(excluded_sample_dir, sampleid))
+            continue
+
+        makedirs(os.path.join(outdir, sampleid))
+
+
+        shutil.copyfile(
+            os.path.join(bam_dir, 'count', 'sample_alignments.bam'),
+            os.path.join(outdir, sampleid, f'{sampleid}_sample_alignments.bam')
+        )
+
+        shutil.copyfile(
+            os.path.join(bam_dir, 'count', 'sample_alignments.bam.bai'),
+            os.path.join(outdir, sampleid, f'{sampleid}_sample_alignments.bam.bai')
+        )
+
+        shutil.copyfile(
+            os.path.join(bam_dir, 'metrics_summary.csv'),
+            os.path.join(outdir, sampleid, f'{sampleid}_metrics_summary.csv')
+        )
+
 
 
 def create_vdj_run_multiconfig(
@@ -197,7 +218,9 @@ def create_vdj_run_multiconfig(
         fastq_data,
         gex_metrics
 ):
-    numreads, numcells, sample_id = read_metrics(gex_metrics)
+    numreads, numcells = read_metrics(gex_metrics)
+
+    numcells = max(numcells, 10)
 
     lines = [
         f'[gene-expression]',
@@ -230,48 +253,54 @@ def cellranger_multi_vdj(
         tcr_identifier,
         cite_fastq,
         cite_identifier,
-        outdir,
+        tar_output,
         tempdir,
+        bcr_fastq=None,
+        bcr_identifier=None,
         numcores=16,
         mempercore=10,
         maxjobs=200,
         jobmode='local'
 ):
-    os.makedirs(tempdir)
-    os.makedirs(os.path.join(tempdir, 'configs'))
+    config_dir = os.path.join(tempdir, 'configs')
+    multiconfig_path = os.path.join(config_dir, 'multiconfig.txt')
 
-    numreads, numcells, sample_id = read_metrics(gex_metrics)
-
-    if numcells == 0:
-        os.makedirs(outdir)
-        os.makedirs(os.path.join(outdir, 'ZEROCELLS'))
-        return
-
-    multiconfig_path = os.path.join(tempdir, 'configs', 'multiconfig.txt')
+    run_dir = os.path.join(tempdir, 'run_dir')
 
     reference = os.path.abspath(reference)
     feature_reference = os.path.abspath(feature_reference)
     vdj_reference = os.path.abspath(vdj_reference)
 
     gex_fastq = os.path.abspath(gex_fastq)
-    tcr_fastq = os.path.abspath(tcr_fastq)
     cite_fastq = os.path.abspath(cite_fastq)
+    tcr_fastq = os.path.abspath(tcr_fastq)
+
+    os.makedirs(tempdir)
+    os.makedirs(config_dir)
+
+    numreads, numcells = read_metrics(gex_metrics)
+    assert not numcells == 0
+
+    fastq_data = [
+        {'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq},
+        {'type': 'Antibody Capture', 'id': cite_identifier, 'fastq': cite_fastq},
+        {'type': 'VDJ-T', 'id': tcr_identifier, 'fastq': tcr_fastq}
+    ]
+    if bcr_fastq:
+        bcr_fastq = os.path.abspath(bcr_fastq)
+        fastq_data.append({'type': 'VDJ-B', 'id': bcr_identifier, 'fastq': bcr_fastq})
 
     create_vdj_run_multiconfig(
         reference, feature_reference, vdj_reference, multiconfig_path,
-        [
-            {'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq},
-            {'type': 'Antibody Capture', 'id': cite_identifier, 'fastq': cite_fastq},
-            {'type': 'VDJ-T', 'id': tcr_identifier, 'fastq': tcr_fastq}
-        ],
-        gex_metrics
+        fastq_data, gex_metrics
     )
 
+    multiconfig_path = os.path.abspath(multiconfig_path)
     cmd = [
         'cellranger',
         'multi',
         '--csv=' + multiconfig_path,
-        '--id=' + sample_id,
+        '--id=' + 'run_dir',
         f'--localcores={numcores}',
         f'--localmem={mempercore}',
         f'--mempercore={mempercore}',
@@ -280,11 +309,13 @@ def cellranger_multi_vdj(
         '--disable-ui'
     ]
 
+    cwd = os.getcwd()
+    os.chdir(tempdir)
     run_cmd(cmd)
+    os.chdir(cwd)
 
-    os.makedirs(outdir)
+    make_tarfile(tar_output, run_dir)
 
-    os.rename(sample_id, f'{outdir}/{sample_id}')
 
 
 def read_metrics(metrics):
@@ -304,11 +335,7 @@ def read_metrics(metrics):
     numreads = str(numreads['Metric Value'].iloc[0])
     numreads = int(numreads.replace(',', '').strip())
 
-    sample_id = df[df['Category'] == 'Library']
-    sample_id = sample_id[sample_id['Metric Name'] == 'Sample Id']
-    sample_id = str(sample_id['Metric Value'].iloc[0])
-
-    return numreads, numcells, sample_id
+    return numreads, numcells
 
 
 def find_gex_id(bam_file):
@@ -341,7 +368,7 @@ def find_fastqs_to_use(tempdir, library_id, gem_group):
 def bam_to_fastq(bam_file, metrics, outdir, tempdir):
     os.makedirs(outdir)
 
-    num_reads, num_cells, sample_id = read_metrics(metrics)
+    num_reads, num_cells = read_metrics(metrics)
 
     library_id, gem_group = find_gex_id(bam_file)
 

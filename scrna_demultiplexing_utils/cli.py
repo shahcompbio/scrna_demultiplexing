@@ -18,6 +18,7 @@ def cli():
 @click.option('--cite_fastq', required=True, help='cores for cellranger multi')
 @click.option('--cite_id', required=True, help='cores for cellranger multi')
 @click.option('--outdir', required=True, help='cores for cellranger multi')
+@click.option('--tar_output', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
 @click.option('--numcores', required=True, help='cores for cellranger multi')
 @click.option('--mempercore', required=True, help='cores for cellranger multi')
@@ -31,6 +32,7 @@ def cellranger_multi(
         cite_fastq,
         cite_id,
         outdir,
+        tar_output,
         tempdir,
         numcores=16,
         mempercore=10,
@@ -45,6 +47,7 @@ def cellranger_multi(
         cite_fastq,
         cite_id,
         outdir,
+        tar_output,
         tempdir,
         numcores=numcores,
         mempercore=mempercore,
@@ -64,8 +67,10 @@ def cellranger_multi(
 @click.option('--tcr_id', required=True, help='cores for cellranger multi')
 @click.option('--cite_fastq', required=True, help='cores for cellranger multi')
 @click.option('--cite_id', required=True, help='cores for cellranger multi')
-@click.option('--outdir', required=True, help='cores for cellranger multi')
+@click.option('--tar_output', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
+@click.option('--bcr_fastq', help='cores for cellranger multi')
+@click.option('--bcr_id', help='cores for cellranger multi')
 @click.option('--numcores', required=True, help='cores for cellranger multi')
 @click.option('--mempercore', required=True, help='cores for cellranger multi')
 @click.option('--maxjobs', required=True, help='cores for cellranger multi')
@@ -81,8 +86,10 @@ def cellranger_multi_vdj(
         tcr_id,
         cite_fastq,
         cite_id,
-        outdir,
+        tar_output,
         tempdir,
+        bcr_fastq=None,
+        bcr_id=None,
         numcores=16,
         mempercore=10,
         maxjobs=200,
@@ -99,8 +106,10 @@ def cellranger_multi_vdj(
         tcr_id,
         cite_fastq,
         cite_id,
-        outdir,
+        tar_output,
         tempdir,
+        bcr_fastq=bcr_fastq,
+        bcr_identifier=bcr_id,
         numcores=numcores,
         mempercore=mempercore,
         maxjobs=maxjobs,
