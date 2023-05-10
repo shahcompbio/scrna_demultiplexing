@@ -14,5 +14,5 @@ setup(
             'scrna_demultiplexing_utils = scrna_demultiplexing_utils.cli:cli',
         ]
     },
-    package_data={'': ['*.py', '*.R', '*.npz', "*.yaml", "data/*", "*.sh"]}
+    package_data={'': ['*.py', '*.R', '*.Rmd', "*.yaml"]}
 )

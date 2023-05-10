@@ -15,8 +15,8 @@ def cli():
 @click.option('--meta_yaml', required=True, help='memory for cellranger multi')
 @click.option('--gex_fastq', required=True, help='cores for cellranger multi')
 @click.option('--gex_id', required=True, help='cores for cellranger multi')
-@click.option('--cite_fastq', required=True, help='cores for cellranger multi')
-@click.option('--cite_id', required=True, help='cores for cellranger multi')
+@click.option('--cite_fastq', help='cores for cellranger multi')
+@click.option('--cite_id', help='cores for cellranger multi')
 @click.option('--outdir', required=True, help='cores for cellranger multi')
 @click.option('--tar_output', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
@@ -29,11 +29,11 @@ def cellranger_multi(
         meta_yaml,
         gex_fastq,
         gex_id,
-        cite_fastq,
-        cite_id,
         outdir,
         tar_output,
         tempdir,
+        cite_fastq=None,
+        cite_id=None,
         numcores=16,
         mempercore=10,
         maxjobs=200,
@@ -44,11 +44,11 @@ def cellranger_multi(
         meta_yaml,
         gex_fastq,
         gex_id,
-        cite_fastq,
-        cite_id,
         outdir,
         tar_output,
         tempdir,
+        cite_fastq=cite_fastq,
+        cite_id=cite_id,
         numcores=numcores,
         mempercore=mempercore,
         maxjobs=maxjobs,
@@ -63,10 +63,10 @@ def cellranger_multi(
 @click.option('--gex_fastq', required=True, help='cores for cellranger multi')
 @click.option('--gex_id', required=True, help='cores for cellranger multi')
 @click.option('--gex_metrics', required=True, help='cores for cellranger multi')
-@click.option('--tcr_fastq', required=True, help='cores for cellranger multi')
-@click.option('--tcr_id', required=True, help='cores for cellranger multi')
-@click.option('--cite_fastq', required=True, help='cores for cellranger multi')
-@click.option('--cite_id', required=True, help='cores for cellranger multi')
+@click.option('--tcr_fastq',  help='cores for cellranger multi')
+@click.option('--tcr_id',  help='cores for cellranger multi')
+@click.option('--cite_fastq',  help='cores for cellranger multi')
+@click.option('--cite_id', help='cores for cellranger multi')
 @click.option('--tar_output', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
 @click.option('--bcr_fastq', help='cores for cellranger multi')
@@ -82,12 +82,12 @@ def cellranger_multi_vdj(
         gex_fastq,
         gex_id,
         gex_metrics,
-        tcr_fastq,
-        tcr_id,
-        cite_fastq,
-        cite_id,
         tar_output,
         tempdir,
+        tcr_fastq=None,
+        tcr_id=None,
+        cite_fastq=None,
+        cite_id=None,
         bcr_fastq=None,
         bcr_id=None,
         numcores=16,
@@ -102,12 +102,12 @@ def cellranger_multi_vdj(
         gex_fastq,
         gex_id,
         gex_metrics,
-        tcr_fastq,
-        tcr_id,
-        cite_fastq,
-        cite_id,
         tar_output,
         tempdir,
+        tcr_fastq=tcr_fastq,
+        tcr_id=tcr_id,
+        cite_fastq=cite_fastq,
+        cite_id=cite_id,
         bcr_fastq=bcr_fastq,
         bcr_identifier=bcr_id,
         numcores=numcores,

@@ -13,25 +13,28 @@ process Demultiplex {
     val(gex_id)
     path(cite_fastq, stageAs: "?/CITE/*")
     val(cite_id)
+    val(jobmode)
   output:
     path("demultiplex_output/*"), emit: per_sample_data
     path("demultiplexing.tar"), emit: tar_output
   script:
+    def cite_fastq_opt = cite_id != 'NODATA' ? " --cite_fastq ${cite_fastq}" : ''
+    def cite_id_opt = cite_id != 'NODATA' ? " --cite_id ${cite_id}" : ''
     """
         scrna_demultiplexing_utils cellranger-multi \
         --reference $reference \
         --meta_yaml $meta_yaml \
         --gex_fastq $gex_fastq \
         --gex_id $gex_id \
-        --cite_fastq $cite_fastq \
-        --cite_id $cite_id \
         --outdir demultiplex_output \
         --tempdir temp \
         --tar_output demultiplexing.tar \
         --numcores 16 \
         --mempercore 10 \
-        --jobmode lsf \
-        --maxjobs 2000
+        --jobmode $jobmode \
+        --maxjobs 2000 \
+        $cite_fastq_opt $cite_id_opt \
+
     """
 }
 
@@ -74,13 +77,18 @@ process CellRangerMultiVdj{
             val(cite_id),
             path(reference),
             path(feature_reference),
-            path(vdj_reference)
+            path(vdj_reference),
+            val(jobmode)
         )
     output:
         path("${sample_id}_vdj.tar"), emit: tar_output
     script:
         def bcr_fastq_opt = bcr_id != 'NODATA' ? " --bcr_fastq ${bcr_fastq}" : ''
         def bcr_id_opt = bcr_id != 'NODATA' ? " --bcr_id ${bcr_id}" : ''
+        def tcr_fastq_opt = tcr_id != 'NODATA' ? " --tcr_fastq ${tcr_fastq}" : ''
+        def tcr_id_opt = tcr_id != 'NODATA' ? " --tcr_id ${tcr_id}" : ''
+        def cite_fastq_opt = cite_id != 'NODATA' ? " --cite_fastq ${cite_fastq}" : ''
+        def cite_id_opt = cite_id != 'NODATA' ? " --cite_id ${cite_id}" : ''
         """
             scrna_demultiplexing_utils  cellranger-multi-vdj \
             --reference $reference \
@@ -89,19 +97,42 @@ process CellRangerMultiVdj{
             --gex_fastq $gex_fastq \
             --gex_id bamtofastq \
             --gex_metrics $gex_metrics \
-            --tcr_fastq $tcr_fastq \
-            --tcr_id $tcr_id \
-            --cite_fastq $cite_fastq \
-            --cite_id $cite_id \
             --tar_output ${sample_id}_vdj.tar \
             --tempdir temp \
             --numcores 16 \
             --mempercore 10 \
-            --jobmode lsf \
+            --jobmode $jobmode \
             --maxjobs 2000 \
-            $bcr_fastq_opt $bcr_id_opt
+            $bcr_fastq_opt $bcr_id_opt \
+            $tcr_fastq_opt $tcr_id_opt \
+            $cite_fastq_opt $cite_id_opt \
         """
 }
+
+
+
+process DemultiplexOutput {
+    publishDir "${params.output_dir}/demultiplexing/", mode: 'copy', pattern: "*"
+    input:
+        path demultiplex_tar
+    output:
+        path demultiplex_tar
+    """
+    echo "Writing output files"
+    """
+}
+
+process VdjOutput {
+    publishDir "${params.output_dir}/VDJ/", mode: 'copy', pattern: "*"
+    input:
+        path demultiplex_tar
+    output:
+        path demultiplex_tar
+    """
+    echo "Writing output files"
+    """
+}
+
 
 
 workflow{
@@ -113,28 +144,42 @@ workflow{
     gex_id = params.gex_id
     cite_fastq = Channel.fromPath(params.cite_fastq)
     cite_id = params.cite_id
+    jobmode = params.jobmode
 
 
-    Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id)
-    Demultiplex.out.tar_output.subscribe{it.copyTo(params.demultiplex_output_tar)}
+    Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id, jobmode)
+    DemultiplexOutput(Demultiplex.out.tar_output)
 
+
+    demux_channel = Demultiplex.out.per_sample_data.flatten()
+    BamToFastq(demux_channel)
 
     if(params.tcr_fastq){
-        Demultiplex.out.per_sample_data | flatten | BamToFastq
-
-        tcr_fastq = Channel.fromPath(params.tcr_fastq)
+        tcr_fastq = params.tcr_fastq
         tcr_id = params.tcr_id
-
-        if(params.bcr_fastq){
-            bcr_fastq = Channel.fromPath(params.bcr_fastq)
-            bcr_id = params.bcr_id
-        } else {
-            bcr_fastq = Channel.fromPath("NO_FILE")
-            bcr_id = "NODATA"
-        }
-
-        BamToFastq.out | combine(tcr_fastq) | combine([tcr_id]) |combine(bcr_fastq) | combine([bcr_id])|combine(cite_fastq) | combine([cite_id])| combine(reference) | combine(feature_reference) | combine(vdj_reference) | CellRangerMultiVdj
-        CellRangerMultiVdj.out.tar_output.subscribe{it.copyTo(params.vdj_output_dir)}
-
+    } else {
+        tcr_fastq = "/path/NO_FILE"
+        tcr_id = "NODATA"
     }
+
+
+    if(params.bcr_fastq){
+        bcr_fastq = params.bcr_fastq
+        bcr_id = params.bcr_id
+    } else {
+        bcr_fastq = "/path/NO_FILE"
+        bcr_id = "NODATA"
+    }
+
+    new_channel = BamToFastq.out.map{
+        it -> [
+            it[0], it[1], it[2], tcr_fastq, tcr_id,
+            bcr_fastq, bcr_id, params.cite_fastq, params.cite_id,
+            params.reference, params.feature_reference, params.vdj_reference, params.jobmode
+        ]
+    }
+
+    CellRangerMultiVdj(new_channel)
+    VdjOutput(CellRangerMultiVdj.out.tar_output)
+
 }

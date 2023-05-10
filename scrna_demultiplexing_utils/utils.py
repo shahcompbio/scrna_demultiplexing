@@ -75,7 +75,9 @@ def create_antibodies(metadata, antibodies_path):
     for cmo in metadata['meta']['citeseq']:
         data.append({
             'id': cmo,
-            'name': metadata['meta']['citeseq'][cmo]['protein'].split(' ')[1].replace(',', '').strip(),
+            'name': metadata['meta']['citeseq'][cmo]['protein'].replace(',', '_').replace(' ', '_').replace('(',
+                                                                                                            '').replace(
+                ')', ''),
             'read': 'R2',
             'pattern': '^NNNNNNNNNN(BC)NNNNNNNNN',
             'sequence': metadata['meta']['citeseq'][cmo]['sequence'],
@@ -122,11 +124,11 @@ def cellranger_multi(
         meta_yaml,
         gex_fastq,
         gex_identifier,
-        cite_fastq,
-        cite_identifier,
         outdir,
         tar_output,
         tempdir,
+        cite_fastq=None,
+        cite_identifier=None,
         numcores=16,
         mempercore=10,
         maxjobs=200,
@@ -149,18 +151,19 @@ def cellranger_multi(
     os.makedirs(config_dir)
     os.makedirs(outdir)
 
+    fastq_data = [{'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq}]
+
+    if cite_fastq:
+        cite_fastq = os.path.abspath(cite_fastq)
+        fastq_data.append({'type': 'Multiplexing Capture', 'id': cite_identifier, 'fastq': cite_fastq})
+
     metadata = yaml.safe_load(open(meta_yaml, 'rt'))
 
     create_cmo(metadata, cmo_path)
     create_antibodies(metadata, antibodies_path)
     create_initial_run_multiconfig(
-        metadata, reference, cmo_path, antibodies_path, multiconfig_path,
-        [
-            {'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq},
-            {'type': 'Multiplexing Capture', 'id': cite_identifier, 'fastq': cite_fastq}
-        ]
+        metadata, reference, cmo_path, antibodies_path, multiconfig_path, fastq_data
     )
-
 
     multiconfig_path = os.path.abspath(multiconfig_path)
     cmd = [
@@ -192,7 +195,6 @@ def cellranger_multi(
 
         makedirs(os.path.join(outdir, sampleid))
 
-
         shutil.copyfile(
             os.path.join(bam_dir, 'count', 'sample_alignments.bam'),
             os.path.join(outdir, sampleid, f'{sampleid}_sample_alignments.bam')
@@ -207,7 +209,6 @@ def cellranger_multi(
             os.path.join(bam_dir, 'metrics_summary.csv'),
             os.path.join(outdir, sampleid, f'{sampleid}_metrics_summary.csv')
         )
-
 
 
 def create_vdj_run_multiconfig(
@@ -249,12 +250,12 @@ def cellranger_multi_vdj(
         gex_fastq,
         gex_identifier,
         gex_metrics,
-        tcr_fastq,
-        tcr_identifier,
-        cite_fastq,
-        cite_identifier,
         tar_output,
         tempdir,
+        tcr_fastq=None,
+        tcr_identifier=None,
+        cite_fastq=None,
+        cite_identifier=None,
         bcr_fastq=None,
         bcr_identifier=None,
         numcores=16,
@@ -281,14 +282,19 @@ def cellranger_multi_vdj(
     numreads, numcells = read_metrics(gex_metrics)
     assert not numcells == 0
 
-    fastq_data = [
-        {'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq},
-        {'type': 'Antibody Capture', 'id': cite_identifier, 'fastq': cite_fastq},
-        {'type': 'VDJ-T', 'id': tcr_identifier, 'fastq': tcr_fastq}
-    ]
+    fastq_data = [{'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq}, ]
+
     if bcr_fastq:
         bcr_fastq = os.path.abspath(bcr_fastq)
         fastq_data.append({'type': 'VDJ-B', 'id': bcr_identifier, 'fastq': bcr_fastq})
+
+    if tcr_fastq:
+        tcr_fastq = os.path.abspath(tcr_fastq)
+        fastq_data.append({'type': 'VDJ-T', 'id': tcr_identifier, 'fastq': tcr_fastq})
+
+    if cite_fastq:
+        cite_fastq = os.path.abspath(cite_fastq)
+        fastq_data.append({'type': 'Antibody Capture', 'id': cite_identifier, 'fastq': cite_fastq})
 
     create_vdj_run_multiconfig(
         reference, feature_reference, vdj_reference, multiconfig_path,
@@ -315,7 +321,6 @@ def cellranger_multi_vdj(
     os.chdir(cwd)
 
     make_tarfile(tar_output, run_dir)
-
 
 
 def read_metrics(metrics):
