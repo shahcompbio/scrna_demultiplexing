@@ -140,12 +140,18 @@ workflow{
     feature_reference = Channel.fromPath(params.feature_reference)
     vdj_reference = Channel.fromPath(params.vdj_reference)
     meta_yaml = Channel.fromPath(params.meta_yaml)
-    gex_fastq = Channel.fromPath(params.gex_fastq)
-    gex_id = params.gex_id
-    cite_fastq = Channel.fromPath(params.cite_fastq)
-    cite_id = params.cite_id
     jobmode = params.jobmode
 
+    gex_fastq = Channel.fromPath(params.gex_fastq)
+    gex_id = params.gex_id
+
+    if(params.cite_fastq){
+        cite_fastq = params.tcr_fastq
+        cite_id = params.tcr_id
+    } else {
+        cite_fastq = "/path/NO_FILE"
+        cite_id = "NODATA"
+    }
 
     Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id, jobmode)
     DemultiplexOutput(Demultiplex.out.tar_output)

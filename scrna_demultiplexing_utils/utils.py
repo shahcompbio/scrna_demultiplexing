@@ -144,13 +144,12 @@ def cellranger_multi(
     reference = os.path.abspath(reference)
     cmo_path = os.path.abspath(cmo_path)
     antibodies_path = os.path.abspath(antibodies_path)
-    gex_fastq = os.path.abspath(gex_fastq)
-    cite_fastq = os.path.abspath(cite_fastq)
 
     os.makedirs(tempdir)
     os.makedirs(config_dir)
     os.makedirs(outdir)
 
+    gex_fastq = os.path.abspath(gex_fastq)
     fastq_data = [{'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq}]
 
     if cite_fastq:
