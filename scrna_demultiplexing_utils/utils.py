@@ -272,16 +272,13 @@ def cellranger_multi_vdj(
     feature_reference = os.path.abspath(feature_reference)
     vdj_reference = os.path.abspath(vdj_reference)
 
-    gex_fastq = os.path.abspath(gex_fastq)
-    cite_fastq = os.path.abspath(cite_fastq)
-    tcr_fastq = os.path.abspath(tcr_fastq)
-
     os.makedirs(tempdir)
     os.makedirs(config_dir)
 
     numreads, numcells = read_metrics(gex_metrics)
     assert not numcells == 0
 
+    gex_fastq = os.path.abspath(gex_fastq)
     fastq_data = [{'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq}, ]
 
     if bcr_fastq:
