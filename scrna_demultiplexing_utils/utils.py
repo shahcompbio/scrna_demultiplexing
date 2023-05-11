@@ -268,15 +268,15 @@ def cellranger_multi_vdj(
 
     run_dir = os.path.join(tempdir, 'run_dir')
 
+    os.makedirs(tempdir)
+    os.makedirs(config_dir)
+
     reference = os.path.abspath(reference)
     vdj_reference = os.path.abspath(vdj_reference)
     antibodies_path = os.path.abspath(antibodies_path)
 
     metadata = yaml.safe_load(open(meta_yaml, 'rt'))
     create_antibodies(metadata, antibodies_path)
-
-    os.makedirs(tempdir)
-    os.makedirs(config_dir)
 
     numreads, numcells = read_metrics(gex_metrics)
     assert not numcells == 0

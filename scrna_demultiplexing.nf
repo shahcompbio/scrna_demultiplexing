@@ -75,7 +75,7 @@ process CellRangerMultiVdj{
             val(bcr_id),
             path(cite_fastq, stageAs: "?/CITE/*"),
             val(cite_id),
-            path(meta_yaml)
+            path(meta_yaml),
             path(reference),
             path(vdj_reference),
             val(jobmode)
