@@ -75,8 +75,8 @@ process CellRangerMultiVdj{
             val(bcr_id),
             path(cite_fastq, stageAs: "?/CITE/*"),
             val(cite_id),
+            path(meta_yaml)
             path(reference),
-            path(feature_reference),
             path(vdj_reference),
             val(jobmode)
         )
@@ -92,12 +92,12 @@ process CellRangerMultiVdj{
         """
             scrna_demultiplexing_utils  cellranger-multi-vdj \
             --reference $reference \
-            --feature_reference $feature_reference \
             --vdj_reference $vdj_reference \
             --gex_fastq $gex_fastq \
             --gex_id bamtofastq \
             --gex_metrics $gex_metrics \
             --tar_output ${sample_id}_vdj.tar \
+            --meta_yaml $meta_yaml \
             --tempdir temp \
             --numcores 16 \
             --mempercore 10 \
@@ -137,7 +137,6 @@ process VdjOutput {
 
 workflow{
     reference = Channel.fromPath(params.reference)
-    feature_reference = Channel.fromPath(params.feature_reference)
     vdj_reference = Channel.fromPath(params.vdj_reference)
     meta_yaml = Channel.fromPath(params.meta_yaml)
     jobmode = params.jobmode
@@ -146,8 +145,8 @@ workflow{
     gex_id = params.gex_id
 
     if(params.cite_fastq){
-        cite_fastq = params.tcr_fastq
-        cite_id = params.tcr_id
+        cite_fastq = params.cite_fastq
+        cite_id = params.cite_id
     } else {
         cite_fastq = "/path/NO_FILE"
         cite_id = "NODATA"
@@ -181,7 +180,8 @@ workflow{
         it -> [
             it[0], it[1], it[2], tcr_fastq, tcr_id,
             bcr_fastq, bcr_id, params.cite_fastq, params.cite_id,
-            params.reference, params.feature_reference, params.vdj_reference, params.jobmode
+            params.meta_yaml, params.reference,
+            params.vdj_reference, params.jobmode
         ]
     }
 

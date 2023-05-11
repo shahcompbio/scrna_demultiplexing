@@ -58,7 +58,6 @@ def cellranger_multi(
 
 @cli.command()
 @click.option('--reference', required=True, help='CSV file path')
-@click.option('--feature_reference', required=True, help='CSV file path')
 @click.option('--vdj_reference', required=True, help='CSV file path')
 @click.option('--gex_fastq', required=True, help='cores for cellranger multi')
 @click.option('--gex_id', required=True, help='cores for cellranger multi')
@@ -67,6 +66,7 @@ def cellranger_multi(
 @click.option('--tcr_id',  help='cores for cellranger multi')
 @click.option('--cite_fastq',  help='cores for cellranger multi')
 @click.option('--cite_id', help='cores for cellranger multi')
+@click.option('--meta_yaml', required=True, help='CSV file path')
 @click.option('--tar_output', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
 @click.option('--bcr_fastq', help='cores for cellranger multi')
@@ -77,12 +77,12 @@ def cellranger_multi(
 @click.option('--jobmode', required=True, help='cores for cellranger multi')
 def cellranger_multi_vdj(
         reference,
-        feature_reference,
         vdj_reference,
         gex_fastq,
         gex_id,
         gex_metrics,
         tar_output,
+        meta_yaml,
         tempdir,
         tcr_fastq=None,
         tcr_id=None,
@@ -97,12 +97,12 @@ def cellranger_multi_vdj(
 ):
     utils.cellranger_multi_vdj(
         reference,
-        feature_reference,
         vdj_reference,
         gex_fastq,
         gex_id,
         gex_metrics,
         tar_output,
+        meta_yaml,
         tempdir,
         tcr_fastq=tcr_fastq,
         tcr_identifier=tcr_id,

@@ -244,12 +244,12 @@ def create_vdj_run_multiconfig(
 
 def cellranger_multi_vdj(
         reference,
-        feature_reference,
         vdj_reference,
         gex_fastq,
         gex_identifier,
         gex_metrics,
         tar_output,
+        meta_yaml,
         tempdir,
         tcr_fastq=None,
         tcr_identifier=None,
@@ -264,12 +264,16 @@ def cellranger_multi_vdj(
 ):
     config_dir = os.path.join(tempdir, 'configs')
     multiconfig_path = os.path.join(config_dir, 'multiconfig.txt')
+    antibodies_path = os.path.join(config_dir, 'antibodies.txt')
 
     run_dir = os.path.join(tempdir, 'run_dir')
 
     reference = os.path.abspath(reference)
-    feature_reference = os.path.abspath(feature_reference)
     vdj_reference = os.path.abspath(vdj_reference)
+    antibodies_path = os.path.abspath(antibodies_path)
+
+    metadata = yaml.safe_load(open(meta_yaml, 'rt'))
+    create_antibodies(metadata, antibodies_path)
 
     os.makedirs(tempdir)
     os.makedirs(config_dir)
