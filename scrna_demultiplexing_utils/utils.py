@@ -297,7 +297,7 @@ def cellranger_multi_vdj(
         fastq_data.append({'type': 'Antibody Capture', 'id': cite_identifier, 'fastq': cite_fastq})
 
     create_vdj_run_multiconfig(
-        reference, feature_reference, vdj_reference, multiconfig_path,
+        reference, antibodies_path, vdj_reference, multiconfig_path,
         fastq_data, gex_metrics
     )
 
