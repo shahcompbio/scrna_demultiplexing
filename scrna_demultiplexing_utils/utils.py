@@ -125,7 +125,6 @@ def cellranger_multi(
         gex_fastq,
         gex_identifier,
         outdir,
-        tar_output,
         tempdir,
         cite_fastq=None,
         cite_identifier=None,
@@ -182,8 +181,15 @@ def cellranger_multi(
     run_cmd(cmd)
     os.chdir(cwd)
 
-    # create a tar for output
-    make_tarfile(tar_output, run_dir)
+    shutil.copytree(
+        os.path.join(run_dir, 'outs','multi','multiplexing_analysis'),
+        os.path.join(outdir, 'multiplexing_analysis')
+    )
+
+    shutil.copyfile(
+        os.path.join(run_dir, 'outs', 'config.csv'),
+        os.path.join(outdir, 'config.csv')
+    )
 
     bam_dirs = glob(f'{run_dir}/outs/per_sample_outs/*')
     for bam_dir in bam_dirs:
@@ -192,22 +198,28 @@ def cellranger_multi(
         if num_cells == 0:
             continue
 
-        makedirs(os.path.join(outdir, sampleid))
+        makedirs(os.path.join(outdir,'samples', sampleid))
 
         shutil.copyfile(
             os.path.join(bam_dir, 'count', 'sample_alignments.bam'),
-            os.path.join(outdir, sampleid, f'{sampleid}_sample_alignments.bam')
+            os.path.join(outdir, 'samples', sampleid, f'{sampleid}_sample_alignments.bam')
         )
 
         shutil.copyfile(
             os.path.join(bam_dir, 'count', 'sample_alignments.bam.bai'),
-            os.path.join(outdir, sampleid, f'{sampleid}_sample_alignments.bam.bai')
+            os.path.join(outdir, 'samples',sampleid, f'{sampleid}_sample_alignments.bam.bai')
         )
 
         shutil.copyfile(
             os.path.join(bam_dir, 'metrics_summary.csv'),
-            os.path.join(outdir, sampleid, f'{sampleid}_metrics_summary.csv')
+            os.path.join(outdir, 'samples',sampleid, f'{sampleid}_metrics_summary.csv')
         )
+
+        shutil.copyfile(
+            os.path.join(bam_dir, 'metrics_summary.csv'),
+            os.path.join(outdir, 'samples',sampleid, f'{sampleid}_web_summary.html')
+        )
+
 
 
 def create_vdj_run_multiconfig(
@@ -251,6 +263,7 @@ def cellranger_multi_vdj(
         tar_output,
         meta_yaml,
         tempdir,
+        sample_id,
         tcr_fastq=None,
         tcr_identifier=None,
         cite_fastq=None,
@@ -266,7 +279,7 @@ def cellranger_multi_vdj(
     multiconfig_path = os.path.join(config_dir, 'multiconfig.txt')
     antibodies_path = os.path.join(config_dir, 'antibodies.txt')
 
-    run_dir = os.path.join(tempdir, 'run_dir')
+    run_dir = os.path.join(tempdir, sample_id)
 
     os.makedirs(tempdir)
     os.makedirs(config_dir)
@@ -306,7 +319,7 @@ def cellranger_multi_vdj(
         'cellranger',
         'multi',
         '--csv=' + multiconfig_path,
-        '--id=' + 'run_dir',
+        '--id=' + sample_id,
         f'--localcores={numcores}',
         f'--localmem={mempercore}',
         f'--mempercore={mempercore}',

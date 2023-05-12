@@ -18,7 +18,6 @@ def cli():
 @click.option('--cite_fastq', help='cores for cellranger multi')
 @click.option('--cite_id', help='cores for cellranger multi')
 @click.option('--outdir', required=True, help='cores for cellranger multi')
-@click.option('--tar_output', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
 @click.option('--numcores', required=True, help='cores for cellranger multi')
 @click.option('--mempercore', required=True, help='cores for cellranger multi')
@@ -30,7 +29,6 @@ def cellranger_multi(
         gex_fastq,
         gex_id,
         outdir,
-        tar_output,
         tempdir,
         cite_fastq=None,
         cite_id=None,
@@ -45,7 +43,6 @@ def cellranger_multi(
         gex_fastq,
         gex_id,
         outdir,
-        tar_output,
         tempdir,
         cite_fastq=cite_fastq,
         cite_identifier=cite_id,
@@ -69,6 +66,7 @@ def cellranger_multi(
 @click.option('--meta_yaml', required=True, help='CSV file path')
 @click.option('--tar_output', required=True, help='cores for cellranger multi')
 @click.option('--tempdir', required=True, help='cores for cellranger multi')
+@click.option('--sample_id', required=True, help='cores for cellranger multi')
 @click.option('--bcr_fastq', help='cores for cellranger multi')
 @click.option('--bcr_id', help='cores for cellranger multi')
 @click.option('--numcores', required=True, help='cores for cellranger multi')
@@ -84,6 +82,7 @@ def cellranger_multi_vdj(
         tar_output,
         meta_yaml,
         tempdir,
+        sample_id,
         tcr_fastq=None,
         tcr_id=None,
         cite_fastq=None,
@@ -104,6 +103,7 @@ def cellranger_multi_vdj(
         tar_output,
         meta_yaml,
         tempdir,
+        sample_id,
         tcr_fastq=tcr_fastq,
         tcr_identifier=tcr_id,
         cite_fastq=cite_fastq,

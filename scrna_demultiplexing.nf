@@ -15,8 +15,7 @@ process Demultiplex {
     val(cite_id)
     val(jobmode)
   output:
-    path("demultiplex_output/*"), emit: per_sample_data
-    path("demultiplexing.tar"), emit: tar_output
+    path("demultiplex_output/samples/*"), emit: per_sample_data
   script:
     def cite_fastq_opt = cite_id != 'NODATA' ? " --cite_fastq ${cite_fastq}" : ''
     def cite_id_opt = cite_id != 'NODATA' ? " --cite_id ${cite_id}" : ''
@@ -28,7 +27,6 @@ process Demultiplex {
         --gex_id $gex_id \
         --outdir demultiplex_output \
         --tempdir temp \
-        --tar_output demultiplexing.tar \
         --numcores 16 \
         --mempercore 10 \
         --jobmode $jobmode \
@@ -99,6 +97,7 @@ process CellRangerMultiVdj{
             --tar_output ${sample_id}_vdj.tar \
             --meta_yaml $meta_yaml \
             --tempdir temp \
+            --sample_id $sample_id \
             --numcores 16 \
             --mempercore 10 \
             --jobmode $jobmode \
@@ -153,7 +152,7 @@ workflow{
     }
 
     Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id, jobmode)
-    DemultiplexOutput(Demultiplex.out.tar_output)
+    DemultiplexOutput(Demultiplex.out.per_sample_data)
 
 
     demux_channel = Demultiplex.out.per_sample_data.flatten()
