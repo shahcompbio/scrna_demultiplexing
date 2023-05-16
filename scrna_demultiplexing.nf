@@ -1,7 +1,7 @@
 // Declare syntax version
 nextflow.enable.dsl=2
 
-process Demultiplex {
+process demultiplex {
     time '96h'
     cpus 1
     memory '10 GB'
@@ -37,7 +37,7 @@ process Demultiplex {
     """
 }
 
-process BamToFastq{
+process bamtofastq{
     time '96h'
     cpus 1
     memory '10 GB'
@@ -58,7 +58,7 @@ process BamToFastq{
 }
 
 
-process CellRangerMultiVdj{
+process per_sample_cell_ranger_multi{
     time '96h'
     cpus 1
     memory '10 GB'

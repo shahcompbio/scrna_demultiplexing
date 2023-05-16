@@ -166,6 +166,7 @@ def cellranger_multi(
     sampleid = gex_identifier
     if cite_identifier:
         sampleid += cite_identifier
+    sampleid = sampleid[:60]
 
     run_dir = os.path.join(tempdir, sampleid)
 
