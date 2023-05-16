@@ -16,6 +16,7 @@ process Demultiplex {
     val(jobmode)
   output:
     path("demultiplex_output/samples/*"), emit: per_sample_data
+    path("demultiplex_output/"), emit: demultiplexed_output
   script:
     def cite_fastq_opt = cite_id != 'NODATA' ? " --cite_fastq ${cite_fastq}" : ''
     def cite_id_opt = cite_id != 'NODATA' ? " --cite_id ${cite_id}" : ''
@@ -79,7 +80,7 @@ process CellRangerMultiVdj{
             val(jobmode)
         )
     output:
-        path("${sample_id}_vdj.tar"), emit: tar_output
+        path("${sample_id}"), emit: output
     script:
         def bcr_fastq_opt = bcr_id != 'NODATA' ? " --bcr_fastq ${bcr_fastq}" : ''
         def bcr_id_opt = bcr_id != 'NODATA' ? " --bcr_id ${bcr_id}" : ''
@@ -94,7 +95,7 @@ process CellRangerMultiVdj{
             --gex_fastq $gex_fastq \
             --gex_id bamtofastq \
             --gex_metrics $gex_metrics \
-            --tar_output ${sample_id}_vdj.tar \
+            --output ${sample_id} \
             --meta_yaml $meta_yaml \
             --tempdir temp \
             --sample_id $sample_id \
@@ -122,7 +123,7 @@ process DemultiplexOutput {
 }
 
 process VdjOutput {
-    publishDir "${params.output_dir}/VDJ/", mode: 'copy', pattern: "*"
+    publishDir "${params.output_dir}/per_sample_outs/", mode: 'copy', pattern: "*"
     input:
         path demultiplex_tar
     output:
@@ -152,7 +153,7 @@ workflow{
     }
 
     Demultiplex(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id, jobmode)
-    DemultiplexOutput(Demultiplex.out.per_sample_data)
+    DemultiplexOutput(Demultiplex.out.demultiplexed_output)
 
 
     demux_channel = Demultiplex.out.per_sample_data.flatten()
@@ -185,6 +186,5 @@ workflow{
     }
 
     CellRangerMultiVdj(new_channel)
-    VdjOutput(CellRangerMultiVdj.out.tar_output)
-
+    VdjOutput(CellRangerMultiVdj.out.output)
 }

@@ -90,30 +90,39 @@ def create_antibodies(metadata, antibodies_path):
 def create_initial_run_multiconfig(
         metadata,
         reference,
-        cmo_path,
-        antibodies_path,
+        config_dir,
         multiconfig_path,
         fastq_data
 ):
     lines = [
         f'[gene-expression]',
         f'reference,{reference}',
-        f'cmo-set,{cmo_path}',
-        f'[feature]',
-        f'reference,{antibodies_path}',
-        f'[libraries]',
-        f'fastq_id,fastqs,feature_types',
     ]
+
+    if 'hashtag' in metadata['meta']:
+        cmo_path = os.path.join(config_dir, 'cmo.txt')
+        cmo_path = os.path.abspath(cmo_path)
+        create_cmo(metadata, cmo_path)
+        lines.extend([f'cmo-set,{cmo_path}'])
+
+    if 'citeseq' in metadata['meta']:
+        antibodies_path = os.path.join(config_dir, 'antibodies.txt')
+        antibodies_path = os.path.abspath(antibodies_path)
+        create_antibodies(metadata, antibodies_path)
+        lines.extend([f'[feature]', f'reference,{antibodies_path}'])
+
+    lines.extend([f'[libraries]', f'fastq_id,fastqs,feature_types'])
 
     for fastq_info in fastq_data:
         lines.append(f"{fastq_info['id']},{fastq_info['fastq']},{fastq_info['type']}")
 
-    lines.append('[samples]'),
-    lines.append('sample_id,cmo_ids')
-    for hashtag in metadata['meta']['hashtag'].keys():
-        sampleid = metadata['meta']['hashtag'][hashtag]['sample_id']
-        sampleid = sampleid.replace('#', '_')
-        lines.append(f"{sampleid},{hashtag}")
+    if 'hashtag' in metadata['meta']:
+        lines.append('[samples]'),
+        lines.append('sample_id,cmo_ids')
+        for hashtag in metadata['meta']['hashtag'].keys():
+            sampleid = metadata['meta']['hashtag'][hashtag]['sample_id']
+            sampleid = sampleid.replace('#', '_')
+            lines.append(f"{sampleid},{hashtag}")
 
     with open(multiconfig_path, 'w') as f:
         f.writelines('\n'.join(lines))
@@ -134,41 +143,38 @@ def cellranger_multi(
         jobmode='local'
 ):
     config_dir = os.path.join(tempdir, 'configs')
-    cmo_path = os.path.join(config_dir, 'cmo.txt')
-    antibodies_path = os.path.join(config_dir, 'antibodies.txt')
     multiconfig_path = os.path.join(config_dir, 'multiconfig.txt')
-
-    run_dir = os.path.join(tempdir, 'run_dir')
-
-    reference = os.path.abspath(reference)
-    cmo_path = os.path.abspath(cmo_path)
-    antibodies_path = os.path.abspath(antibodies_path)
 
     os.makedirs(tempdir)
     os.makedirs(config_dir)
     os.makedirs(outdir)
 
-    gex_fastq = os.path.abspath(gex_fastq)
-    fastq_data = [{'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq}]
-
-    if cite_fastq:
-        cite_fastq = os.path.abspath(cite_fastq)
-        fastq_data.append({'type': 'Multiplexing Capture', 'id': cite_identifier, 'fastq': cite_fastq})
-
     metadata = yaml.safe_load(open(meta_yaml, 'rt'))
 
-    create_cmo(metadata, cmo_path)
-    create_antibodies(metadata, antibodies_path)
+    gex_fastq = os.path.abspath(gex_fastq)
+    fastq_data = [{'type': 'Gene Expression', 'id': gex_identifier, 'fastq': gex_fastq}]
+    if cite_fastq:
+        cite_fastq = os.path.abspath(cite_fastq)
+        cite_type = 'Multiplexing Capture' if 'hashtag' in metadata['meta'] else 'Antibody Capture'
+        fastq_data.append({'type': cite_type, 'id': cite_identifier, 'fastq': cite_fastq})
+
+    reference = os.path.abspath(reference)
     create_initial_run_multiconfig(
-        metadata, reference, cmo_path, antibodies_path, multiconfig_path, fastq_data
+        metadata, reference, config_dir, multiconfig_path, fastq_data
     )
+
+    sampleid = gex_identifier
+    if cite_identifier:
+        sampleid += cite_identifier
+
+    run_dir = os.path.join(tempdir, sampleid)
 
     multiconfig_path = os.path.abspath(multiconfig_path)
     cmd = [
         'cellranger',
         'multi',
         '--csv=' + multiconfig_path,
-        '--id=' + 'run_dir',
+        '--id=' + sampleid,
         f'--localcores={numcores}',
         f'--localmem={mempercore}',
         f'--maxjobs={maxjobs}',
@@ -181,10 +187,11 @@ def cellranger_multi(
     run_cmd(cmd)
     os.chdir(cwd)
 
-    shutil.copytree(
-        os.path.join(run_dir, 'outs','multi','multiplexing_analysis'),
-        os.path.join(outdir, 'multiplexing_analysis')
-    )
+    if os.path.exists(os.path.join(run_dir, 'outs', 'multi', 'multiplexing_analysis')):
+        shutil.copytree(
+            os.path.join(run_dir, 'outs', 'multi', 'multiplexing_analysis'),
+            os.path.join(outdir, 'multiplexing_analysis')
+        )
 
     shutil.copyfile(
         os.path.join(run_dir, 'outs', 'config.csv'),
@@ -198,7 +205,7 @@ def cellranger_multi(
         if num_cells == 0:
             continue
 
-        makedirs(os.path.join(outdir,'samples', sampleid))
+        makedirs(os.path.join(outdir, 'samples', sampleid))
 
         shutil.copyfile(
             os.path.join(bam_dir, 'count', 'sample_alignments.bam'),
@@ -207,31 +214,32 @@ def cellranger_multi(
 
         shutil.copyfile(
             os.path.join(bam_dir, 'count', 'sample_alignments.bam.bai'),
-            os.path.join(outdir, 'samples',sampleid, f'{sampleid}_sample_alignments.bam.bai')
+            os.path.join(outdir, 'samples', sampleid, f'{sampleid}_sample_alignments.bam.bai')
         )
 
         shutil.copyfile(
             os.path.join(bam_dir, 'metrics_summary.csv'),
-            os.path.join(outdir, 'samples',sampleid, f'{sampleid}_metrics_summary.csv')
+            os.path.join(outdir, 'samples', sampleid, f'{sampleid}_metrics_summary.csv')
         )
 
         shutil.copyfile(
             os.path.join(bam_dir, 'metrics_summary.csv'),
-            os.path.join(outdir, 'samples',sampleid, f'{sampleid}_web_summary.html')
+            os.path.join(outdir, 'samples', sampleid, f'{sampleid}_web_summary.html')
         )
-
 
 
 def create_vdj_run_multiconfig(
         reference,
-        feature_reference,
+        metadata,
+        config_dir,
         vdj_reference,
-        multiconfig_path,
         fastq_data,
         gex_metrics
 ):
-    numreads, numcells = read_metrics(gex_metrics)
+    multiconfig_path = os.path.join(config_dir, 'multiconfig.txt')
+    multiconfig_path = os.path.abspath(multiconfig_path)
 
+    numreads, numcells = read_metrics(gex_metrics)
     numcells = max(numcells, 10)
 
     lines = [
@@ -239,19 +247,25 @@ def create_vdj_run_multiconfig(
         f'reference,{reference}',
         f'force-cells,{numcells}',
         f'check-library-compatibility,false',
-        f'[feature]',
-        f'reference,{feature_reference}',
         f'[vdj]',
         f'reference,{vdj_reference}',
-        f'[libraries]',
-        f'fastq_id,fastqs,feature_types',
     ]
+
+    if 'citeseq' in metadata['meta']:
+        antibodies_path = os.path.join(config_dir, 'antibodies.txt')
+        antibodies_path = os.path.abspath(antibodies_path)
+        create_antibodies(metadata, antibodies_path)
+        lines.extend([f'[feature]', f'reference,{antibodies_path}'])
+
+    lines.extend([f'[libraries]', f'fastq_id,fastqs,feature_types'])
 
     for fastq_info in fastq_data:
         lines.append(f"{fastq_info['id']},{fastq_info['fastq']},{fastq_info['type']}")
 
     with open(multiconfig_path, 'w') as f:
         f.writelines('\n'.join(lines))
+
+    return multiconfig_path
 
 
 def cellranger_multi_vdj(
@@ -260,7 +274,7 @@ def cellranger_multi_vdj(
         gex_fastq,
         gex_identifier,
         gex_metrics,
-        tar_output,
+        output,
         meta_yaml,
         tempdir,
         sample_id,
@@ -276,8 +290,6 @@ def cellranger_multi_vdj(
         jobmode='local'
 ):
     config_dir = os.path.join(tempdir, 'configs')
-    multiconfig_path = os.path.join(config_dir, 'multiconfig.txt')
-    antibodies_path = os.path.join(config_dir, 'antibodies.txt')
 
     run_dir = os.path.join(tempdir, sample_id)
 
@@ -286,10 +298,8 @@ def cellranger_multi_vdj(
 
     reference = os.path.abspath(reference)
     vdj_reference = os.path.abspath(vdj_reference)
-    antibodies_path = os.path.abspath(antibodies_path)
 
     metadata = yaml.safe_load(open(meta_yaml, 'rt'))
-    create_antibodies(metadata, antibodies_path)
 
     numreads, numcells = read_metrics(gex_metrics)
     assert not numcells == 0
@@ -307,14 +317,17 @@ def cellranger_multi_vdj(
 
     if cite_fastq:
         cite_fastq = os.path.abspath(cite_fastq)
-        fastq_data.append({'type': 'Antibody Capture', 'id': cite_identifier, 'fastq': cite_fastq})
+        if 'citeseq' in metadata['meta'] or 'hashtag' in metadata['meta']:
+            cite_type = 'Antibody Capture'
+        else:
+            cite_type = 'Multiplexing Capture'
+        fastq_data.append({'type': cite_type, 'id': cite_identifier, 'fastq': cite_fastq})
 
-    create_vdj_run_multiconfig(
-        reference, antibodies_path, vdj_reference, multiconfig_path,
+    multiconfig_path = create_vdj_run_multiconfig(
+        reference, metadata, config_dir, vdj_reference,
         fastq_data, gex_metrics
     )
 
-    multiconfig_path = os.path.abspath(multiconfig_path)
     cmd = [
         'cellranger',
         'multi',
@@ -333,7 +346,7 @@ def cellranger_multi_vdj(
     run_cmd(cmd)
     os.chdir(cwd)
 
-    make_tarfile(tar_output, run_dir)
+    os.rename(run_dir, output)
 
 
 def read_metrics(metrics):
