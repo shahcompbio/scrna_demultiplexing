@@ -163,6 +163,7 @@ def cellranger_multi(
         metadata, reference, config_dir, multiconfig_path, fastq_data
     )
 
+
     sampleid = gex_identifier
     if cite_identifier:
         sampleid += cite_identifier
