@@ -2,7 +2,7 @@ process CELLRANGER_PERSAMPLE{
     time '96h'
     cpus 1
     memory '10 GB'
-    label: 'cellranger'
+    label 'cellranger'
 
 
     input:
