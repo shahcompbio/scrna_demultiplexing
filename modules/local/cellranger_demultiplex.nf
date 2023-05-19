@@ -2,6 +2,7 @@ process CELLRANGER_DEMULTIPLEX {
     time '96h'
     cpus 1
     memory '10 GB'
+    label: 'cellranger'
 
   input:
     path(reference)
