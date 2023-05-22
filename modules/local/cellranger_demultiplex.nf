@@ -1,6 +1,6 @@
 process CELLRANGER_DEMULTIPLEX {
     time '96h'
-    cpus 6
+    cpus 16
     memory '12 GB'
     label 'cellranger'
 
