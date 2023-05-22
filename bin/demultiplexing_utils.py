@@ -131,7 +131,7 @@ def create_initial_run_multiconfig(
         f.writelines('\n'.join(lines))
 
 
-def cellranger_multi(
+def run_cellranger_multi(
         reference,
         meta_yaml,
         gex_fastq,
@@ -272,7 +272,7 @@ def create_vdj_run_multiconfig(
     return multiconfig_path
 
 
-def cellranger_multi_vdj(
+def run_cellranger_multi_vdj(
         reference,
         vdj_reference,
         gex_fastq,
@@ -400,7 +400,7 @@ def find_fastqs_to_use(tempdir, library_id, gem_group):
     return files
 
 
-def bam_to_fastq(bam_file, metrics, outdir, tempdir):
+def run_bam_to_fastq(bam_file, metrics, outdir, tempdir):
     os.makedirs(outdir)
 
     num_reads, num_cells = read_metrics(metrics)
@@ -452,7 +452,7 @@ def cellranger_multi(
         maxjobs=200,
         jobmode='local'
 ):
-    cellranger_multi(
+    run_cellranger_multi(
         reference,
         meta_yaml,
         gex_fastq,
@@ -509,7 +509,7 @@ def cellranger_multi_vdj(
         maxjobs=200,
         jobmode='local'
 ):
-    cellranger_multi_vdj(
+    run_cellranger_multi_vdj(
         reference,
         vdj_reference,
         gex_fastq,
@@ -538,7 +538,7 @@ def cellranger_multi_vdj(
 @click.option('--outdir', required=True, help='CSV file path')
 @click.option('--tempdir', required=True, help='CSV file path')
 def bam_to_fastq(bam_file, metrics, outdir, tempdir):
-    bam_to_fastq(
+    run_bam_to_fastq(
         bam_file,
         metrics,
         outdir,
