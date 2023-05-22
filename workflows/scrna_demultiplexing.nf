@@ -55,7 +55,7 @@ if(params.cite_fastq){
     cite_fastq = params.cite_fastq
     cite_id = params.cite_id
 } else {
-    cite_fastq = file("$baseDir/dummy_file.txt")
+    cite_fastq = file("$baseDir/assets/dummy_file.txt")
     cite_id = "NODATA"
 }
 
@@ -63,7 +63,7 @@ if(params.tcr_fastq){
     tcr_fastq = params.tcr_fastq
     tcr_id = params.tcr_id
 } else {
-    tcr_fastq = file("$baseDir/dummy_file.txt")
+    tcr_fastq = file("$baseDir/assets/dummy_file.txt")
     tcr_id = "NODATA"
 }
 
@@ -72,7 +72,7 @@ if(params.bcr_fastq){
     bcr_fastq = params.bcr_fastq
     bcr_id = params.bcr_id
 } else {
-    bcr_fastq = file("$baseDir/dummy_file.txt")
+    bcr_fastq = file("$baseDir/assets/dummy_file.txt")
     bcr_id = "NODATA"
 }
 
