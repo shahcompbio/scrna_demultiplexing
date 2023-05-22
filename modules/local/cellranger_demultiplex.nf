@@ -19,7 +19,7 @@ process CELLRANGER_DEMULTIPLEX {
     def cite_fastq_opt = cite_id != 'NODATA' ? " --cite_fastq ${cite_fastq}" : ''
     def cite_id_opt = cite_id != 'NODATA' ? " --cite_id ${cite_id}" : ''
     """
-        scrna_demultiplexing_utils cellranger-multi \
+        demultiplexing_utils.py cellranger-multi \
         --reference $reference \
         --meta_yaml $meta_yaml \
         --gex_fastq $gex_fastq \
