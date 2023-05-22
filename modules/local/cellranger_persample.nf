@@ -1,7 +1,7 @@
 process CELLRANGER_PERSAMPLE{
     time '96h'
-    cpus 1
-    memory '10 GB'
+    cpus 16
+    memory '12 GB'
     label 'cellranger'
 
 
