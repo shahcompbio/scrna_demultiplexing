@@ -227,7 +227,7 @@ def run_cellranger_multi(
         )
 
         shutil.copyfile(
-            os.path.join(bam_dir, 'metrics_summary.csv'),
+            os.path.join(bam_dir, 'web_summary.html'),
             os.path.join(outdir, 'samples', sampleid, f'{sampleid}_web_summary.html')
         )
 
