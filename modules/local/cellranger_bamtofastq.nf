@@ -18,6 +18,7 @@ process CELLRANGER_BAMTOFASTQ{
         """
     stub:
         """
+        sample_id = "${per_sample_data.baseName}"
         mkdir output
         """
 }
