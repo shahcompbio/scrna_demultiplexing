@@ -83,13 +83,13 @@ nextflow run shahcompbio/scrna_demultiplexing \
 
 #### to run on juno with singularity
 
-  **build container**
+  _build container_
   ```
   module load singularity/3.7.1
   singularity build cellranger.sif docker://quay.io/diljotgrewal/cellranger
   ```
 
-  **launch pipeline**
+  _launch pipeline_
   ```
   module load java/jdk-11.0.11
   nextflow run shahcompbio/scrna_demultiplexing \
