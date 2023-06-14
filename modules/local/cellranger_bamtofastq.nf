@@ -6,7 +6,7 @@ process CELLRANGER_BAMTOFASTQ{
     input:
         path(per_sample_data)
     output:
-        tuple(val(sample_id), path("output"), path("${per_sample_data}/*metrics_summary.csv"))
+        tuple(val("${per_sample_data.baseName}"), path("output"), path("${per_sample_data}/*metrics_summary.csv"))
     script:
         sample_id = "${per_sample_data.baseName}"
         """
@@ -17,10 +17,9 @@ process CELLRANGER_BAMTOFASTQ{
               --tempdir temp
         """
     stub:
-        sample_id = "${per_sample_data.baseName}"
         """
         mkdir output
         mkdir -p "${per_sample_data.baseName}"
-        touch "${sample_id}/metrics_summary.csv"
+        touch "${per_sample_data.baseName}/metrics_summary.csv"
         """
 }
