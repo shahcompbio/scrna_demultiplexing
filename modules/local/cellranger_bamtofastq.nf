@@ -20,6 +20,7 @@ process CELLRANGER_BAMTOFASTQ{
         sample_id = "${per_sample_data.baseName}"
         """
         mkdir output
-        touch SA123/metrics_summary.csv
+        mkdir "${sample_id}"
+        touch "${sample_id}/metrics_summary.csv"
         """
 }
