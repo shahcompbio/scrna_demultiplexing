@@ -52,6 +52,6 @@ process CELLRANGER_PERSAMPLE{
         """
     stub:
         """
-            mkdir $sample_id
+            mkdir "${sample_id}"
         """
 }
