@@ -16,4 +16,8 @@ process CELLRANGER_BAMTOFASTQ{
               --outdir output \
               --tempdir temp
         """
+    stub:
+        """
+        mkdir output
+        """
 }

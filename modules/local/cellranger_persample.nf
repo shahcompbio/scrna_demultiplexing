@@ -50,4 +50,8 @@ process CELLRANGER_PERSAMPLE{
             $tcr_fastq_opt $tcr_id_opt \
             $cite_fastq_opt $cite_id_opt \
         """
+    stub:
+        """
+            mkdir $sample_id
+        """
 }

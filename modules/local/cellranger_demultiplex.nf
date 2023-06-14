@@ -34,4 +34,9 @@ process CELLRANGER_DEMULTIPLEX {
         $cite_fastq_opt $cite_id_opt \
 
     """
+  stub:
+    """
+    mkdir -p demultiplex_output/samples/SA123
+    mkdir -p demultiplex_output/samples/SA456
+    """
 }
