@@ -19,7 +19,8 @@ process CELLRANGER_PERSAMPLE{
             path(meta_yaml),
             path(reference),
             path(vdj_reference),
-            val(jobmode)
+            val(jobmode),
+            val(numcores)
         )
     output:
         path("${sample_id}"), emit: output
@@ -41,7 +42,7 @@ process CELLRANGER_PERSAMPLE{
             --meta_yaml $meta_yaml \
             --tempdir temp \
             --sample_id $sample_id \
-            --numcores 16 \
+            --numcores $numcores \
             --mempercore 10 \
             --jobmode $jobmode \
             --maxjobs 2000 \

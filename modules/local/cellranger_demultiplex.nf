@@ -12,6 +12,7 @@ process CELLRANGER_DEMULTIPLEX {
     path(cite_fastq, stageAs: "?/CITE/*")
     val(cite_id)
     val(jobmode)
+    val(numcores)
   output:
     path("demultiplex_output/samples/*"), emit: per_sample_data
     path("demultiplex_output/"), emit: demultiplexed_output
@@ -26,7 +27,7 @@ process CELLRANGER_DEMULTIPLEX {
         --gex_id $gex_id \
         --outdir demultiplex_output \
         --tempdir temp \
-        --numcores 16 \
+        --numcores $numcores \
         --mempercore 10 \
         --jobmode $jobmode \
         --maxjobs 2000 \
