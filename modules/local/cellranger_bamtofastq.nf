@@ -9,7 +9,7 @@ process CELLRANGER_BAMTOFASTQ{
         tuple(val("${per_sample_data.baseName}"), path("output"), path("${per_sample_data}/*metrics_summary.csv"))
     script:
         """
-            demultiplexing_utils.py bam-to-fastq \
+            cellranger_utils bam-to-fastq \
               --bam_file $per_sample_data/*bam \
               --metrics $per_sample_data/*metrics_summary.csv \
               --outdir output \
