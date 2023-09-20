@@ -19,7 +19,6 @@ process CELLRANGER_PERSAMPLE{
             path(meta_yaml),
             path(reference),
             path(vdj_reference),
-            val(jobmode),
             val(numcores)
         )
     output:
@@ -44,8 +43,6 @@ process CELLRANGER_PERSAMPLE{
             --sample_id $sample_id \
             --numcores $numcores \
             --mempercore 10 \
-            --jobmode $jobmode \
-            --maxjobs 2000 \
             $bcr_fastq_opt $bcr_id_opt \
             $tcr_fastq_opt $tcr_id_opt \
             $cite_fastq_opt $cite_id_opt \
