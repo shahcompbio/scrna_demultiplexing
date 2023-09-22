@@ -19,7 +19,6 @@ process CELLRANGER_PERSAMPLE{
             path(meta_yaml),
             path(reference),
             path(vdj_reference),
-            val(numcores)
         )
     output:
         path("${sample_id}"), emit: output
@@ -41,7 +40,7 @@ process CELLRANGER_PERSAMPLE{
             --meta_yaml $meta_yaml \
             --tempdir temp \
             --sample_id $sample_id \
-            --numcores $numcores \
+            --numcores ${task.cpus} \
             --mempercore 10 \
             $bcr_fastq_opt $bcr_id_opt \
             $tcr_fastq_opt $tcr_id_opt \

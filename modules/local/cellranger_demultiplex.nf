@@ -11,7 +11,6 @@ process CELLRANGER_DEMULTIPLEX {
     val(gex_id)
     path(cite_fastq, stageAs: "?/CITE/*")
     val(cite_id)
-    val(numcores)
   output:
     path("demultiplex_output/samples/*"), emit: per_sample_data
     path("demultiplex_output/"), emit: demultiplexed_output
@@ -26,7 +25,7 @@ process CELLRANGER_DEMULTIPLEX {
         --gex_id $gex_id \
         --outdir demultiplex_output \
         --tempdir temp \
-        --numcores $numcores \
+        --numcores ${task.cpus} \
         --mempercore 10 \
         $cite_fastq_opt $cite_id_opt \
 

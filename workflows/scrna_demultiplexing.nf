@@ -69,13 +69,12 @@ workflow DEMULTIPLEX{
     reference = Channel.fromPath(params.reference)
     vdj_reference = Channel.fromPath(params.vdj_reference)
     meta_yaml = Channel.fromPath(params.meta_yaml)
-    numcores = params.numcores
 
     gex_fastq = Channel.fromPath(params.gex_fastq)
     gex_id = params.gex_id
 
 
-    CELLRANGER_DEMULTIPLEX(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id, numcores)
+    CELLRANGER_DEMULTIPLEX(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id)
 
 
     demux_channel = CELLRANGER_DEMULTIPLEX.out.per_sample_data.flatten()
@@ -86,7 +85,7 @@ workflow DEMULTIPLEX{
             it[0], it[1], it[2], tcr_fastq, tcr_id,
             bcr_fastq, bcr_id, params.cite_fastq, params.cite_id,
             params.meta_yaml, params.reference,
-            params.vdj_reference, params.numcores
+            params.vdj_reference
         ]
     }
 
