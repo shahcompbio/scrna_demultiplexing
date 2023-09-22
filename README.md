@@ -107,3 +107,34 @@ nextflow run shahcompbio/scrna_demultiplexing \
   --reference /juno/work/shah/reference/transcriptomes/GRCh38 \
   --vdj_reference /juno/work/shah/reference/transcriptomes/refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0
   ```
+
+
+
+
+
+## Workflow use cases
+
+
+| Gene Expression        | Cite Seq               | HTO                    | VDJ-B                  | VDJ-T                  | Steps |
+|------------------------|------------------------|------------------------|------------------------|------------------------|-------|
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|1      |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|1      |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|1      |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|1      |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_check_mark:      |1      |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |1      |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|1      |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|1,2,3  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |1,2,3  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |1,2,3  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|1,2,3  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |1,2,3  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |1,2,3  |
+
+Logic can be summed up with this pseudocode
+```
+if HTO && (VDJ-T | VDJ-B):
+      STEP123_DEMULTI
+else:
+      STEP1ONLY w/all libraries added to config
+```
