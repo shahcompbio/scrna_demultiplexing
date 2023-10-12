@@ -78,6 +78,7 @@ workflow DEMULTIPLEX{
     sample_id = params.sample_id
 
     CELLRANGER_CHECK_HTO(meta_yaml, cite_id, tcr_id, bcr_id)
+
     CELLRANGER_CHECK_HTO.out.view()
 
     if (CELLRANGER_CHECK_HTO.out == "non-multiplexed"){
@@ -97,6 +98,7 @@ workflow DEMULTIPLEX{
         )
     }
     else{
+        CELLRANGER_CHECK_HTO.out.view()
         exit 1, 'other!'
     }
 
