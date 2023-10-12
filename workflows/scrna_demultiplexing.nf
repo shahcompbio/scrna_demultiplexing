@@ -79,8 +79,6 @@ workflow DEMULTIPLEX{
 
     CELLRANGER_CHECK_HTO(meta_yaml, cite_id, tcr_id, bcr_id)
 
-    CELLRANGER_CHECK_HTO.out.view()
-
     if (CELLRANGER_CHECK_HTO.out == "non-multiplexed"){
         CELLRANGER_NONMULTIPLEXED(
             reference,
