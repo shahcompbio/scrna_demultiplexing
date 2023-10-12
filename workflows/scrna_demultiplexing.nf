@@ -76,6 +76,8 @@ workflow DEMULTIPLEX{
 
 
     CELLRANGER_CHECK_HTO(meta_yaml, cite_id, tcr_id, bcr_id)
+    CELLRANGER_CHECK_HTO.out.view()
+
 
 
 //     CELLRANGER_DEMULTIPLEX(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id)
