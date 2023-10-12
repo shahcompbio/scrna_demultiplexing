@@ -64,6 +64,7 @@ include { CELLRANGER_BAMTOFASTQ         } from '../modules/local/cellranger_bamt
 include { CELLRANGER_DEMULTIPLEX         } from '../modules/local/cellranger_demultiplex'
 include { CELLRANGER_PERSAMPLE         } from '../modules/local/cellranger_persample'
 include { CELLRANGER_CHECK_HTO         } from '../modules/local/cellranger_check_hto'
+include { CELLRANGER_NONMULTIPLEXED         } from '../modules/local/cellranger_non_multiplexed'
 
 
 workflow DEMULTIPLEX{
@@ -74,10 +75,26 @@ workflow DEMULTIPLEX{
     gex_fastq = Channel.fromPath(params.gex_fastq)
     gex_id = params.gex_id
 
+    sample_id = params.sample_id
 
     CELLRANGER_CHECK_HTO(meta_yaml, cite_id, tcr_id, bcr_id)
-    CELLRANGER_CHECK_HTO.out.view()
 
+    if (CELLRANGER_CHECK_HTO.out == "non-multiplexed"){
+        CELLRANGER_NONMULTIPLEXED(
+            reference,
+            vdj_reference,
+            gex_fastq,
+            gex_id,
+            meta_yaml,
+            sample_id,
+            cite_fastq,
+            cite_id,
+            bcr_fastq,
+            bcr_id,
+            tcr_fastq,
+            tcr_id
+        )
+    }
 
 
 //     CELLRANGER_DEMULTIPLEX(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id)
