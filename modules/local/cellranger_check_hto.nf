@@ -9,7 +9,7 @@ process CELLRANGER_CHECK_HTO{
         val(tcr_id)
         val(bcr_id)
     output:
-        stdout mode
+        stdout
     script:
         def bcr_id_opt = bcr_id != 'NODATA' ? " --bcr_id ${bcr_id}" : ''
         def tcr_id_opt = tcr_id != 'NODATA' ? " --tcr_id ${tcr_id}" : ''
