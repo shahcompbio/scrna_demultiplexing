@@ -16,7 +16,7 @@ process CELLRANGER_CHECK_HTO{
         def cite_hto_id_opt = cite_hto_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
 
         """
-            cellranger_utils check_multiplex_status \
+            cellranger_utils check-multiplex-status \
               --meta_yaml ${meta_yaml} \
               $bcr_id_opt $tcr_id_opt $cite_hto_id_opt
         """
