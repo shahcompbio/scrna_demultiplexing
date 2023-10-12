@@ -14,8 +14,8 @@ process CELLRANGER_PERSAMPLE{
             val(tcr_id),
             path(bcr_fastq, stageAs: "?/BCR/*"),
             val(bcr_id),
-            path(cite_fastq, stageAs: "?/CITE/*"),
-            val(cite_id),
+            path(cite_hto_fastq, stageAs: "?/CITE/*"),
+            val(cite_hto_id),
             path(meta_yaml),
             path(reference),
             path(vdj_reference),
@@ -27,8 +27,8 @@ process CELLRANGER_PERSAMPLE{
         def bcr_id_opt = bcr_id != 'NODATA' ? " --bcr_id ${bcr_id}" : ''
         def tcr_fastq_opt = tcr_id != 'NODATA' ? " --tcr_fastq ${tcr_fastq}" : ''
         def tcr_id_opt = tcr_id != 'NODATA' ? " --tcr_id ${tcr_id}" : ''
-        def cite_fastq_opt = cite_id != 'NODATA' ? " --cite_fastq ${cite_fastq}" : ''
-        def cite_id_opt = cite_id != 'NODATA' ? " --cite_id ${cite_id}" : ''
+        def cite_hto_fastq_opt = cite_hto_id != 'NODATA' ? " --cite_hto_fastq ${cite_hto_fastq}" : ''
+        def cite_hto_id_opt = cite_hto_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
         """
             cellranger_utils  cellranger-multi-vdj \
             --reference $reference \
@@ -44,7 +44,7 @@ process CELLRANGER_PERSAMPLE{
             --mempercore 10 \
             $bcr_fastq_opt $bcr_id_opt \
             $tcr_fastq_opt $tcr_id_opt \
-            $cite_fastq_opt $cite_id_opt \
+            $cite_hto_fastq_opt $cite_hto_id_opt \
         """
     stub:
         """

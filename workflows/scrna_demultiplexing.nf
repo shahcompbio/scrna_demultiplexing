@@ -63,6 +63,7 @@ if(params.bcr_fastq){
 include { CELLRANGER_BAMTOFASTQ         } from '../modules/local/cellranger_bamtofastq'
 include { CELLRANGER_DEMULTIPLEX         } from '../modules/local/cellranger_demultiplex'
 include { CELLRANGER_PERSAMPLE         } from '../modules/local/cellranger_persample'
+include { CELLRANGER_CHECK_HTO         } from '../modules/local/cellranger_check_hto'
 
 
 workflow DEMULTIPLEX{
@@ -74,20 +75,23 @@ workflow DEMULTIPLEX{
     gex_id = params.gex_id
 
 
-    CELLRANGER_DEMULTIPLEX(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id)
+    CELLRANGER_CHECK_HTO(meta_yaml, cite_id, tcr_id, bcr_id)
 
 
-    demux_channel = CELLRANGER_DEMULTIPLEX.out.per_sample_data.flatten()
-    CELLRANGER_BAMTOFASTQ(demux_channel)
-
-    new_channel = CELLRANGER_BAMTOFASTQ.out.map{
-        it -> [
-            it[0], it[1], it[2], tcr_fastq, tcr_id,
-            bcr_fastq, bcr_id, params.cite_fastq, params.cite_id,
-            params.meta_yaml, params.reference,
-            params.vdj_reference
-        ]
-    }
-
-    CELLRANGER_PERSAMPLE(new_channel)
+//     CELLRANGER_DEMULTIPLEX(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id)
+//
+//
+//     demux_channel = CELLRANGER_DEMULTIPLEX.out.per_sample_data.flatten()
+//     CELLRANGER_BAMTOFASTQ(demux_channel)
+//
+//     new_channel = CELLRANGER_BAMTOFASTQ.out.map{
+//         it -> [
+//             it[0], it[1], it[2], tcr_fastq, tcr_id,
+//             bcr_fastq, bcr_id, params.cite_fastq, params.cite_id,
+//             params.meta_yaml, params.reference,
+//             params.vdj_reference
+//         ]
+//     }
+//
+//     CELLRANGER_PERSAMPLE(new_channel)
 }

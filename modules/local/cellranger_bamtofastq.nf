@@ -4,21 +4,20 @@ process CELLRANGER_BAMTOFASTQ{
     memory '10 GB'
 
     input:
-        path(per_sample_data)
+        path(cellranger_dir)
     output:
-        tuple(val("${per_sample_data.baseName}"), path("output"), path("${per_sample_data}/*metrics_summary.csv"))
+        tuple(val("${cellranger_dir.baseName}"), path("output"), path("output/metrics.csv"))
     script:
         """
             cellranger_utils bam-to-fastq \
-              --bam_file $per_sample_data/*bam \
-              --metrics $per_sample_data/*metrics_summary.csv \
+              --cellranger_demultiplex_dir ${cellranger_dir} \
               --outdir output \
               --tempdir temp
         """
     stub:
         """
         mkdir output
-        mkdir -p "${per_sample_data.baseName}"
-        touch "${per_sample_data.baseName}/metrics_summary.csv"
+        mkdir -p "${cellranger_dir.baseName}"
+        touch "output/metrics_summary.csv"
         """
 }
