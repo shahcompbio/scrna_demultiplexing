@@ -1,5 +1,5 @@
 
-process CELLRANGER_NONMULTIPLEXED {
+process CELLRANGER_INITIAL_RUN {
     time '96h'
     cpus 16
     memory '12 GB'
@@ -29,8 +29,9 @@ process CELLRANGER_NONMULTIPLEXED {
     def bcr_id_opt = bcr_id != 'NODATA' ? " --bcr_id ${bcr_id}" : ''
 
     """
-        cellranger_utils cellranger-multi \
+        cellranger_utils cellranger \
         --reference $reference \
+        --vdj_reference $vdj_reference \
         --meta_yaml $meta_yaml \
         --gex_fastq $gex_fastq \
         --gex_id $gex_id \
@@ -38,6 +39,7 @@ process CELLRANGER_NONMULTIPLEXED {
         --tempdir temp \
         --numcores ${task.cpus} \
         --mempercore 10 \
+        --sample_id $sample_id \
         $cite_fastq_opt $cite_id_opt \
         $bcr_fastq_opt $bcr_id_opt \
         $tcr_fastq_opt $tcr_id_opt \

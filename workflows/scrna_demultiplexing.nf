@@ -61,10 +61,10 @@ if(params.bcr_fastq){
 ////////////////////////////////////////////////////
 
 include { CELLRANGER_BAMTOFASTQ         } from '../modules/local/cellranger_bamtofastq'
-include { CELLRANGER_DEMULTIPLEX         } from '../modules/local/cellranger_demultiplex'
+// include { CELLRANGER_DEMULTIPLEX         } from '../modules/local/cellranger_demultiplex'
 include { CELLRANGER_PERSAMPLE         } from '../modules/local/cellranger_persample'
 include { CELLRANGER_CHECK_HTO         } from '../modules/local/cellranger_check_hto'
-include { CELLRANGER_NONMULTIPLEXED         } from '../modules/local/cellranger_non_multiplexed'
+include { CELLRANGER_INITIAL_RUN         } from '../modules/local/cellranger_initial_run'
 
 
 workflow DEMULTIPLEX{
@@ -79,8 +79,7 @@ workflow DEMULTIPLEX{
 
     CELLRANGER_CHECK_HTO(meta_yaml, cite_id, tcr_id, bcr_id)
 
-    if (CELLRANGER_CHECK_HTO.out == "non-multiplexed"){
-        CELLRANGER_NONMULTIPLEXED(
+    CELLRANGER_INITIAL_RUN(
             reference,
             vdj_reference,
             gex_fastq,
@@ -93,13 +92,7 @@ workflow DEMULTIPLEX{
             bcr_id,
             tcr_fastq,
             tcr_id
-        )
-    }
-    else{
-        CELLRANGER_CHECK_HTO.out.view()
-        exit 1, 'other!'
-    }
-
+    )
 
 //     CELLRANGER_DEMULTIPLEX(reference, meta_yaml, gex_fastq, gex_id, cite_fastq, cite_id)
 //

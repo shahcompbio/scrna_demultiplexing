@@ -15,10 +15,10 @@ process CELLRANGER_DEMULTIPLEX {
   output:
     path("demultiplex_output/"), emit: demultiplexed_output
   script:
-    def cite_hto_fastq_opt = cite_id != 'NODATA' ? " --cite_hto_fastq ${cite_hto_fastq}" : ''
-    def cite_hto_id_opt = cite_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
+    def cite_hto_fastq_opt = cite_hto_id != 'NODATA' ? " --cite_hto_fastq ${cite_hto_fastq}" : ''
+    def cite_hto_id_opt = cite_hto_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
     """
-        cellranger_utils cellranger-multi \
+        cellranger_utils cellranger-demultiplex \
         --reference $reference \
         --meta_yaml $meta_yaml \
         --gex_fastq $gex_fastq \
@@ -28,7 +28,7 @@ process CELLRANGER_DEMULTIPLEX {
         --numcores ${task.cpus} \
         --mempercore 10 \
         --sample_id ${sample_id} \
-        $cite_fastq_opt $cite_id_opt \
+        $cite_hto_fastq_opt $cite_hto_id_opt \
 
     """
   stub:
