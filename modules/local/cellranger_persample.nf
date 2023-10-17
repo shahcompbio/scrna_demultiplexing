@@ -18,7 +18,7 @@ process CELLRANGER_PERSAMPLE{
             val(cite_hto_id),
             path(meta_yaml),
             path(reference),
-            path(vdj_reference),
+            path(vdj_reference)
         )
     output:
         path("${sample_id}"), emit: output
@@ -30,7 +30,7 @@ process CELLRANGER_PERSAMPLE{
         def cite_hto_fastq_opt = cite_hto_id != 'NODATA' ? " --cite_hto_fastq ${cite_hto_fastq}" : ''
         def cite_hto_id_opt = cite_hto_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
         """
-            cellranger_utils  cellranger-multi-vdj \
+            cellranger_utils  cellranger-persample \
             --reference $reference \
             --vdj_reference $vdj_reference \
             --gex_fastq $gex_fastq \

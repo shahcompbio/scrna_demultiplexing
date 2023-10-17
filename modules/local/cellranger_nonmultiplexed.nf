@@ -1,11 +1,12 @@
 
-process CELLRANGER_INITIAL_RUN {
+process CELLRANGER_NONMULTIPLEXED {
     time '96h'
     cpus 16
     memory '12 GB'
     label 'cellranger'
 
   input:
+    val(mode)
     path(reference)
     path(vdj_reference)
     path(gex_fastq, stageAs: "?/GEX/*")
@@ -29,7 +30,7 @@ process CELLRANGER_INITIAL_RUN {
     def bcr_id_opt = bcr_id != 'NODATA' ? " --bcr_id ${bcr_id}" : ''
 
     """
-        cellranger_utils cellranger \
+        cellranger_utils cellranger-nonmultiplexed \
         --reference $reference \
         --vdj_reference $vdj_reference \
         --meta_yaml $meta_yaml \

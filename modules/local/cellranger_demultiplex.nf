@@ -5,6 +5,7 @@ process CELLRANGER_DEMULTIPLEX {
     label 'cellranger'
 
   input:
+    val(mode)
     path(reference)
     path(meta_yaml)
     path(gex_fastq, stageAs: "?/GEX/*")
@@ -13,7 +14,7 @@ process CELLRANGER_DEMULTIPLEX {
     val(cite_hto_id)
     val(sample_id)
   output:
-    path("demultiplex_output/"), emit: demultiplexed_output
+    path("demultiplex_output/outs/per_sample_outs/*"), emit: cellranger_sample_outputs
   script:
     def cite_hto_fastq_opt = cite_hto_id != 'NODATA' ? " --cite_hto_fastq ${cite_hto_fastq}" : ''
     def cite_hto_id_opt = cite_hto_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
