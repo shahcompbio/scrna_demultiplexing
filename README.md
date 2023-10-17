@@ -123,13 +123,13 @@ nextflow run shahcompbio/scrna_demultiplexing \
 |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|1      | :heavy_check_mark:  |
 |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_check_mark:      |1      | :heavy_check_mark:  |
 |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|1      | :heavy_multiplication_x:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|1      | :heavy_check_mark:  |
 |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|1,2,3  | :heavy_multiplication_x:  |
 |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |1,2,3  | :heavy_multiplication_x:  |
 |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |1,2,3  | :heavy_multiplication_x:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|1,2,3  | :heavy_multiplication_x:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |1,2,3  | :heavy_multiplication_x:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |1,2,3  | :heavy_multiplication_x:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|1,2,3  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |1,2,3  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |1,2,3  | :heavy_check_mark:  |
 
 Logic can be summed up with this pseudocode
 ```
