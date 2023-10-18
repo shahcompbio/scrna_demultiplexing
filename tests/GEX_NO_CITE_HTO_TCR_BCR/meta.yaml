@@ -1,0 +1,15 @@
+files:
+meta:
+  hashtag:
+    Hash-tag1:
+      sample_id: Donor1_healthy
+      sequence: GTCAACTCTTTAGCG
+    Hash-tag2:
+      sample_id: Donor2_healthy
+      sequence: TGATGGCCTATTGGG
+    Hash-tag3:
+      sample_id: Donor3_ALLpatient
+      sequence: TTCCGCCTCTCTTTG
+    Hash-tag4:
+      sample_id: Donor4_ALLpatient
+      sequence: AGTAAGTTCAGCGTA
