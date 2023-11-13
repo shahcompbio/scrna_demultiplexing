@@ -2,6 +2,7 @@ process CELLRANGER_IS_MULTIPLEXED{
     time '96h'
     cpus 1
     memory '10 GB'
+    label 'process_low'
 
     input:
         path(meta_yaml)

@@ -2,9 +2,9 @@ process CELLRANGER_BAMTOFASTQ{
     time '96h'
     cpus 1
     memory '10 GB'
+    label 'process_medium'
 
     input:
-//         tuple(
         path(cellranger_dir)
     output:
         tuple(val("${cellranger_dir.baseName}"), path("output"), path("output/metrics.csv"))

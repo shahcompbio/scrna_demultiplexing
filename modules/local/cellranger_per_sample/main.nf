@@ -1,8 +1,8 @@
-process CELLRANGER_PERSAMPLE{
+process CELLRANGER_PER_SAMPLE{
     time '96h'
     cpus 16
     memory '12 GB'
-    label 'cellranger'
+    label 'process_high'
 
 
     input:
@@ -44,7 +44,7 @@ process CELLRANGER_PERSAMPLE{
             --mempercore 10 \
             $bcr_fastq_opt $bcr_id_opt \
             $tcr_fastq_opt $tcr_id_opt \
-            $cite_hto_fastq_opt $cite_hto_id_opt \
+            $cite_hto_fastq_opt $cite_hto_id_opt
         """
     stub:
         """

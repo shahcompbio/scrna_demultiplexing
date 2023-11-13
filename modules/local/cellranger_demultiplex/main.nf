@@ -2,7 +2,7 @@ process CELLRANGER_DEMULTIPLEX {
     time '96h'
     cpus 16
     memory '12 GB'
-    label 'cellranger'
+    label 'process_high'
 
   input:
     val(mode)
@@ -34,7 +34,6 @@ process CELLRANGER_DEMULTIPLEX {
     """
   stub:
     """
-    mkdir -p demultiplex_output/outs/per_sample_outs/
     mkdir -p demultiplex_output/outs/per_sample_outs/
     """
 }

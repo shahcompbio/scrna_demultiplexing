@@ -11,13 +11,13 @@ nextflow.enable.dsl=2
 
 
 
-include { DEMULTIPLEX } from './workflows/scrna_demultiplexing'
+include { SCRNA_CELLRANGER_PIPELINE } from './workflows/scrna_cellranger'
 
 //
 // WORKFLOW: Run main demultiplex analysis pipeline
 //
-workflow SCRNA_DEMULTIPLEXING {
-    DEMULTIPLEX ()
+workflow SCRNA_CELLRANGER {
+    SCRNA_CELLRANGER_PIPELINE ()
 }
 
 /*
@@ -30,7 +30,7 @@ workflow SCRNA_DEMULTIPLEXING {
 // WORKFLOW: Execute a single named workflow for the pipeline
 //
 workflow {
-    SCRNA_DEMULTIPLEXING ()
+    SCRNA_CELLRANGER ()
 }
 
 /*

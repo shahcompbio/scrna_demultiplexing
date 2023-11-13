@@ -1,9 +1,9 @@
 
-process CELLRANGER_NONMULTIPLEXED {
+process CELLRANGER_NON_MULTIPLEXED {
     time '96h'
     cpus 16
     memory '12 GB'
-    label 'cellranger'
+    label 'process_high'
 
   input:
     val(mode)
