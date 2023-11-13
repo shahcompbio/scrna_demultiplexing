@@ -1,0 +1,427 @@
+files:
+meta:
+  hashtag:
+    Hash-tag1:
+      sample_id: Donor1_healthy
+      sequence: GTCAACTCTTTAGCG
+    Hash-tag2:
+      sample_id: Donor2_healthy
+      sequence: TGATGGCCTATTGGG
+    Hash-tag3:
+      sample_id: Donor3_ALLpatient
+      sequence: TTCCGCCTCTCTTTG
+    Hash-tag4:
+      sample_id: Donor4_ALLpatient
+      sequence: AGTAAGTTCAGCGTA
+  citeseq:
+    CD86:
+     protein: anti-human_CD86
+     sequence: GTCTTTGTCAGTGCA
+    CD274:
+     protein: anti-human_CD274_B7-H1_PD-L1
+     sequence: GTTGTCCGACAATAC
+    CD270:
+     protein: anti-human_CD270_HVEM_TR2
+     sequence: TGATAGAAACAGACC
+    CD155:
+     protein: anti-human_CD155_PVR
+     sequence: ATCACATCGTTGCCA
+    CD112:
+     protein: anti-human_CD112_Nectin-2
+     sequence: AACCTTCCGTCTAAG
+    CD47:
+     protein: anti-human_CD47
+     sequence: GCATTCTGTCACCTA
+    CD48:
+     protein: anti-human_CD48
+     sequence: CTACGACGTAGAAGA
+    CD40:
+     protein: anti-human_CD40
+     sequence: CTCAGATGGAGTATG
+    CD154:
+     protein: anti-human_CD154
+     sequence: GCTAGATAGATGCAA
+    CD52:
+     protein: anti-human_CD52
+     sequence: CTTTGTACGAGCAAA
+    CD3:
+     protein: anti-human_CD3
+     sequence: CTCATTGTAACTCCT
+    CD8:
+     protein: anti-human_CD8
+     sequence: GCGCAACTTGATGAT
+    CD56:
+     protein: anti-human_CD56
+     sequence: TCCTTTCCTGATAGG
+    CD19:
+     protein: anti-human_CD19
+     sequence: CTGGGCAATTACTCG
+    CD33:
+     protein: anti-human_CD33
+     sequence: TAACTCAGGGCCTAT
+    CD11c:
+     protein: anti-human_CD11c
+     sequence: TACGCCTATAACTTG
+    HLA-A_B_C:
+     protein: anti-human_HLA-A_B_C
+     sequence: TATGCGAGGCTTATC
+    CD45RA:
+     protein: anti-human_CD45RA
+     sequence: TCAATCCTTCCGCTT
+    CD123:
+     protein: anti-human_CD123
+     sequence: CTTCACTCTGTCAGG
+    CD7:
+     protein: anti-human_CD7
+     sequence: TGGATTCCCGGACTT
+    CD105:
+     protein: anti-human_CD105
+     sequence: ATCGTCGAGAGCTAG
+    CD49f:
+     protein: anti-human_mouse_CD49f
+     sequence: TTCCGAGGATGATCT
+    CD194:
+     protein: anti-human_CD194_CCR4
+     sequence: AGCTTACCTGCACGA
+    CD4:
+     protein: anti-human_CD4
+     sequence: TGTTCCCGCTCAACT
+    CD44:
+     protein: anti-mouse_human_CD44
+     sequence: TGGCTTCAGGTCCTA
+    CD14:
+     protein: anti-human_CD14
+     sequence: TCTCAGACCTCCGTA
+    CD16:
+     protein: anti-human_CD16
+     sequence: AAGTTCACTCTTTGC
+    CD25:
+     protein: anti-human_CD25
+     sequence: TTTGTCCTGTACGCC
+    CD45RO:
+     protein: anti-human_CD45RO
+     sequence: CTCCGAATCATGTTG
+    CD279:
+     protein: anti-human_CD279
+     sequence: ACAGCGCCGTATTTA
+    TIGIT:
+     protein: anti-human_TIGIT_VSTM3
+     sequence: TTGCTTACCGCCAGA
+    Mouse_IgG1_k_isotype_Ctrl:
+     protein: Mouse_IgG1_k_isotype_Ctrl
+     sequence: GCCGGACGACATTAA
+    Mouse_IgG2a_k_isotype_Ctrl:
+     protein: Mouse_IgG2a_k_isotype_Ctrl
+     sequence: CTCCTACCTAAACTG
+    Mouse_IgG2b_k_isotype_Ctrl:
+     protein: Mouse_IgG2b_k_isotype_Ctrl
+     sequence: ATATGTATCACGCGA
+    Rat_IgG2b_k_isotype_Ctrl:
+     protein: Rat_IgG2b_k_Isotype_Ctrl
+     sequence: GATTCTTGACGACCT
+    CD20:
+     protein: anti-human_CD20
+     sequence: TTCTGGGTCCCTAGA
+    CD335:
+     protein: anti-human_CD335_NKp46
+     sequence: ACAATTTGAACAGCG
+    CD31:
+     protein: anti-human_CD31
+     sequence: ACCTTTATGCCACGG
+    CD146:
+     protein: anti-human_CD146
+     sequence: CCTTGGATAACATCA
+    IgM:
+     protein: anti-human_IgM
+     sequence: TAGCGAGCCCGTATA
+    CD5:
+     protein: anti-human_CD5
+     sequence: CATTAACGGGATGCC
+    CD183:
+     protein: anti-human_CD183_CXCR3
+     sequence: GCGATGGTAGATTAT
+    CD195:
+     protein: anti-human_CD195_CCR5
+     sequence: CCAAAGTAAGAGCCA
+    CD32:
+     protein: anti-human_CD32
+     sequence: GCTTCCGAATTACCG
+    CD196:
+     protein: anti-human_CD196_CCR6
+     sequence: GATCCCTTTGTCACT
+    CD185:
+     protein: anti-human_CD185_CXCR5
+     sequence: AATTCAACCGTCGCC
+    CD103:
+     protein: anti-human_CD103_Integrin_aE
+     sequence: GACCTCATTGTGAAT
+    CD69:
+     protein: anti-human_CD69
+     sequence: GTCTCTTGGCTTAAA
+    CD62L:
+     protein: anti-human_CD62L
+     sequence: GTCCCTGCAACTTGA
+    CD161:
+     protein: anti-human_CD161
+     sequence: GTACGCAGTCCTTCT
+    CD152:
+     protein: anti-human_CD152_CTLA-4
+     sequence: ATGGTTCACGTAATC
+    CD223:
+     protein: anti-human_CD223_LAG-3
+     sequence: CATTTGTCTGCCGGT
+    KLRG1:
+     protein: anti-human_KLRG1_MAFA
+     sequence: CTTATTTCCTGCCCT
+    CD27:
+     protein: anti-human_CD27
+     sequence: GCACTCCTGCATGTA
+    CD107a:
+     protein: anti-human_CD107a_LAMP-1
+     sequence: CAGCCCACTGCAATA
+    CD95:
+     protein: anti-human_CD95_Fas
+     sequence: CCAGCTCATTAGAGC
+    CD134:
+     protein: anti-human_CD134_OX40
+     sequence: AACCCACCGTTGTTA
+    HLA-DR:
+     protein: anti-human_HLA-DR
+     sequence: AATAGCGAGCAAGTA
+    CD1c:
+     protein: anti-human_CD1c
+     sequence: GAGCTACTTCACTCG
+    CD11b:
+     protein: anti-human_CD11b
+     sequence: GACAAGTGATCTGCA
+    CD64:
+     protein: anti-human_CD64
+     sequence: AAGTATGCCCTACGA
+    CD141:
+     protein: anti-human_CD141_Thrombomodulin
+     sequence: GGATAACCGCGCTTT
+    CD1d:
+     protein: anti-human_CD1d
+     sequence: TCGAGTCGCTTATCA
+    CD314:
+     protein: anti-human_CD314_NKG2D
+     sequence: CGTGTTTGTTCCTCA
+    CD35:
+     protein: anti-human_CD35
+     sequence: ACTTCCGTCGATCTT
+    CD57:
+     protein: anti-human_CD57_Recombinant
+     sequence: AACTCCCTATGGAGG
+    CD272:
+     protein: anti-human_CD272_BTLA
+     sequence: GTTATTGGACTAAGG
+    CD278:
+     protein: anti-human_mouse_rat_CD278_ICOS
+     sequence: CGCGCACCCATTAAA
+    CD58:
+     protein: anti-human_CD58_LFA-3
+     sequence: GTTCCTATGGACGAC
+    CD39:
+     protein: anti-human_CD39
+     sequence: TTACCTGGTATCCGT
+    CX3CR1:
+     protein: anti-human_CX3CR1
+     sequence: AGTATCGTCTCTGGG
+    CD24:
+     protein: anti-human_CD24
+     sequence: AGATTCCTTCGTGTT
+    CD21:
+     protein: anti-human_CD21
+     sequence: AACCTAGTAGTTCGG
+    CD11a:
+     protein: anti-human_CD11a
+     sequence: TATATCCTTGTGAGC
+    CD79b:
+     protein: anti-human_CD79b_Ig
+     sequence: ATTCTTCAACCGAAG
+    CD244:
+     protein: anti-human_CD244_2B4
+     sequence: TCGCTTGGATGGTAG
+    CD169:
+     protein: anti-human_CD169_Sialoadhesin_Siglec-1
+     sequence: TACTCAGCGTGTTTG
+    integrin_b7:
+     protein: anti-human_mouse_integrin_b7
+     sequence: TCCTTGGATGTACCG
+    CD268:
+     protein: anti-human_CD268_BAFF-R
+     sequence: CGAAGTCGATCCGTA
+    CD42b:
+     protein: anti-human_CD42b
+     sequence: TCCTAGTACCGAAGT
+    CD54:
+     protein: anti-human_CD54
+     sequence: CTGATAGACTTGAGT
+    CD62P:
+     protein: anti-human_CD62P_P-Selectin
+     sequence: CCTTCCGTATCCCTT
+    CD119:
+     protein: anti-human_CD119_IFN-y_R_a_chain
+     sequence: TGTGTATTCCCTTGT
+    TCRa_b:
+     protein: anti-human_TCR_a_or_b
+     sequence: CGTAACGTAGAGCGA
+    Rat_IgG1_k_isotype_Ctrl:
+     protein: Rat_IgG1_k_isotype_Ctrl
+     sequence: ATCAGATGCCCTCAT
+    Rat_IgG2a_k_isotype_Ctrl:
+     protein: Rat_IgG2a_k_Isotype_Ctrl
+     sequence: AAGTCAGGTTCGTTT
+    Armenian_Hamster_IgG_Isotype_Ctrl:
+     protein: Armenian_Hamster_IgG_Isotype_Ctrl
+     sequence: CCTGTCATTAAGACT
+    CD122:
+     protein: anti-human_CD122_IL-2Rb
+     sequence: TCATTTCCTCCGATT
+    CD267:
+     protein: anti-human_CD267_TACI
+     sequence: AGTGATGGAGCGAAC
+    FceRIa:
+     protein: anti-human_FceRIa
+     sequence: CTCGTTTCCGTATCG
+    CD41:
+     protein: anti-human_CD41
+     sequence: ACGTTGTGGCCTTGT
+    CD137:
+     protein: anti-human_CD137_4-1BB
+     sequence: CAGTAAGTTCGGGAC
+    CD163:
+     protein: anti-human_CD163
+     sequence: GCTTCTCCTTCCTTA
+    CD83:
+     protein: anti-human_CD83
+     sequence: CCACTCATTTCCGGT
+    CD124:
+     protein: anti-human_CD124_IL-4R
+     sequence: CCGTCCTGATAGATG
+    CD13:
+     protein: anti-human_CD13
+     sequence: TTTCAACGCCCTTTC
+    CD2:
+     protein: anti-human_CD2
+     sequence: TACGATTTGTCAGGG
+    CD226:
+     protein: anti-human_CD226_DNAM-1
+     sequence: TCTCAGTGTTTGTGG
+    CD29:
+     protein: anti-human_CD29
+     sequence: GTATTCCCTCAGTCA
+    CD303:
+     protein: anti-human_CD303_BDCA-2
+     sequence: GAGATGTCCGAATTT
+    CD49b:
+     protein: anti-human_CD49b
+     sequence: GCTTTCTTCAGTATG
+    CD81:
+     protein: anti-human_CD81_TAPA-1
+     sequence: GTATCCTTCCTTGGC
+    IgD:
+     protein: anti-human_IgD
+     sequence: CAGTCTCCGTAGAGT
+    CD18:
+     protein: anti-human_CD18
+     sequence: TATTGGGACACTTCT
+    CD28:
+     protein: anti-human_CD28
+     sequence: TGAGAACGACCCTAA
+    CD38:
+     protein: anti-human_CD38
+     sequence: TGTACCCGCTTGTGA
+    CD127:
+     protein: anti-human_CD127_IL-7Ra
+     sequence: GTGTGTTGTCCTATG
+    CD45:
+     protein: anti-human_CD45
+     sequence: TGCAATTACCCGGAT
+    CD22:
+     protein: anti-human_CD22
+     sequence: GGGTTGTTGTCTTTG
+    CD71:
+     protein: anti-human_CD71
+     sequence: CCGTGTTCCTCATTA
+    CD26:
+     protein: anti-human_CD26
+     sequence: GGTGGCTAGATAATG
+    CD36:
+     protein: anti-human_CD36
+     sequence: TTCTTTGCCTTGCCA
+    CD158:
+     protein: anti-human_CD158_KIR2DL1_S1_S3_S5
+     sequence: TATCAACCAACGCTT
+    CD49a:
+     protein: anti-human_CD49a
+     sequence: ACTGATGGACTCAGA
+    CD49d:
+     protein: anti-human_CD49d
+     sequence: CCATTCAACTTCCGG
+    CD73:
+     protein: anti-human_CD73_Ecto-5-nucleotidase
+     sequence: CAGTTCCTCAGTTCG
+    TCRV_7-2:
+     protein: anti-human_TCR_V_7-2
+     sequence: TACGAGCAGTATTCA
+    TCRV_2:
+     protein: anti-human_TCR_V_2
+     sequence: TCAGTCAGATGGTAT
+    LOX-1:
+     protein: anti-human_LOX-1
+     sequence: ACCCTTTACCGAATA
+    CD158b:
+     protein: anti-human_CD158b_KIR2DL2_L3_NKAT2
+     sequence: GACCCGTAGTTTGAT
+    CD158e1:
+     protein: anti-human_CD158e1_KIR3DL1_NKB1
+     sequence: GGACGCTTTCCTTGA
+    CD319:
+     protein: anti-human_CD319_CRACC
+     sequence: AGTATGCCATGTCTT
+    CD99:
+     protein: anti-human_CD99
+     sequence: ACCCGTCCCTAAGAA
+    CLEC12A:
+     protein: anti-human_CLEC12A
+     sequence: CATTAGAGTCTGCCA
+    CD352:
+     protein: anti-human_CD352_NTB-A
+     sequence: AGTTTCCACTCAGGC
+    CD94:
+     protein: anti-human_CD94
+     sequence: CTTTCCGGTCCTACA
+    Ig_light_chain_k:
+     protein: anti-human_Ig_light_chain_k
+     sequence: AGCTCAGCCAGTATG
+    CD85j:
+     protein: anti-human_CD85j_ILT2
+     sequence: CCTTGTGAGGCTATG
+    CD23:
+     protein: anti-human_CD23
+     sequence: TCTGTATAACCGTCT
+    Ig_light_chain_g:
+     protein: anti-human_Ig_light_chain_gamma
+     sequence: CAGCCAGTAAGTCAC
+    CD328:
+     protein: anti-human_CD328_Siglec-7
+     sequence: CTTAGCATTTCACTG
+    GPR56:
+     protein: anti-human_GPR56
+     sequence: GCCTAGTTTCCGTTT
+    HLA-E:
+     protein: anti-human_HLA-E
+     sequence: GAGTCGAGAAATCAT
+    CD82:
+     protein: anti-human_CD82
+     sequence: TCCCACTTCCGCTTT
+    CD101:
+     protein: anti-human_CD101_BB27
+     sequence: CTACTTCCCTGTCAA
+    CD88:
+     protein: anti-human_CD88_C5aR
+     sequence: GCCGCATGAGAAACA
+    CD224:
+     protein: anti-human_CD224
+     sequence: CTGATGAGATGTCAG
