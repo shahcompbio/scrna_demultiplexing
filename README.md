@@ -117,19 +117,19 @@ nextflow run shahcompbio/scrna_demultiplexing \
 
 | Gene Expression        | Cite Seq               | HTO                    | VDJ-B                  | VDJ-T                  | Steps | Testing             |
 |------------------------|------------------------|------------------------|------------------------|------------------------|-------|---------------------|
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_check_mark:      |1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|1      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|1,2,3  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |1,2,3  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |1,2,3  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|1,2,3  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |1,2,3  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |1,2,3  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_check_mark:      |NonMultiplex      | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |NonMultiplex      | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|DeMultiplex  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|DeMultiplex  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
 
 Logic can be summed up with this pseudocode
 ```
