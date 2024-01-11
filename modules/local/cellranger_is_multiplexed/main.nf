@@ -21,7 +21,7 @@ process CELLRANGER_IS_MULTIPLEXED{
             if [ "\${mode}" = "multiplexed" ]; then
                 echo "1"
             else
-                echo "0"
+                echo "1"
             fi
         """
     stub:
