@@ -115,26 +115,31 @@ nextflow run shahcompbio/scrna_demultiplexing \
 ## Workflow use cases
 
 
-| Gene Expression        | Cite Seq               | HTO                    | VDJ-B                  | VDJ-T                  | Steps | Testing             |
-|------------------------|------------------------|------------------------|------------------------|------------------------|-------|---------------------|
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_check_mark:      |NonMultiplex      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |NonMultiplex      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex      | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|DeMultiplex  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|DeMultiplex  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
-|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |DeMultiplex  | :heavy_check_mark:  |
+| Gene Expression        | Cite Seq               | HTO                    | VDJ-B                  | VDJ-T                  | Steps          | Testing             |
+|------------------------|------------------------|------------------------|------------------------|------------------------|----------------|---------------------|
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex    | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|DeMultiplex     | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_multiplication_x:|NonMultiplex    | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|NonMultiplex    | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|:heavy_check_mark:      |NonMultiplex    | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |NonMultiplex    | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_multiplication_x:|DeMultiplex     | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|DeMultiplex     | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |DeMultiplex     | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |DeMultiplex     | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|DeMultiplex     | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_multiplication_x:|:heavy_check_mark:      |DeMultiplex     | :heavy_check_mark:  |
+|:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |:heavy_check_mark:      |DeMultiplex     | :heavy_check_mark:  |
 
 Logic can be summed up with this pseudocode
 ```
-if HTO && (VDJ-T | VDJ-B):
-      STEP123_DEMULTI
+if HTO:
+    CELLRANGERMULTI(gex_fastq, cite_fastq)   -> {raw_h5, [['sample': filtered_h5, bam], ...]}
+    for sample in CELLRANGERMULTI:
+      BAM2FASTQ(sample.bam)
+      CELLRANGERMULTI(bam2fastq.gex_fastq, cite_fastq,vdj_b_fastq, vdj_t_fastq) -> {raw_h5, ['sample': filtered_h5, bam]}
+      CELLBENDER(CELLRANGERMULTI.raw_h5)
 else:
-      STEP1ONLY w/all libraries added to config
+    CELLRANGERMULTI(gex_fastq, cite_fastq,vdj_b_fastq, vdj_t_fastq) -> {raw_h5, ['sample': filtered_h5, bam]}
+    CELLBENDER(CELLRANGERMULTI.raw_h5)    
 ```
