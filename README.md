@@ -22,15 +22,15 @@ nextflow run shahcompbio/scrna_demultiplexing \
   --output_dir outputs \
   --jobmode local \
   --numcores 16 \
-  --meta_yaml 10x_test_data/meta.yaml \
-  --gex_fastq 10x_test_data/gex  \
+  --meta_yaml $PWD/10x_test_data/meta.yaml \
+  --gex_fastq $PWD/10x_test_data/gex  \
   --gex_id PBMC-ALL_60k_universal_HashAB1-4_BL_4tags_Rep1_gex \
-  --cite_fastq 10x_test_data/cite \
+  --cite_fastq $PWD/10x_test_data/cite \
   --cite_id PBMC-ALL_60k_universal_HashAB1-4_BL_4tags_Rep1_ab \
-  --reference reference_grch38_scrna/GRCh38/ \
-  --vdj_reference reference_grch38_scrna/refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0 \
+  --reference $PWD/reference_grch38_scrna/GRCh38/ \
+  --vdj_reference $PWD/reference_grch38_scrna/refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0 \
   --sample_id SAMP123 \
-  --bcr_fastq 10x_test_data/cite \
+  --bcr_fastq $PWD/10x_test_data/cite \
   --bcr_id PBMC-ALL_60k_universal_HashAB1-4_BL_4tags_Rep1_ab
 ```
 
