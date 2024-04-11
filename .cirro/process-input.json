@@ -1,0 +1,17 @@
+{
+    "bcr_fastq": "$.params.inputs[0].s3|/data/",
+    "bcr_id": "$.params.dataset.paramJson.bcr_id",
+    "cite_fastq": "$.params.inputs[0].s3|/data/",
+    "cite_id": "$.params.dataset.paramJson.cite_id",
+    "gex_fastq": "$.params.inputs[0].s3|/data/",
+    "gex_id": "$.params.dataset.paramJson.gex_id",
+    "jobmode": "local",
+    "meta_yaml": "$.params.inputs[0].s3|/data/",
+    "numcores": "16",
+    "outdir": "$.params.dataset.s3|/data/",
+    "reference": "$.params.inputs[0].s3|/data/",
+    "sample_id": "$.params.dataset.paramJson.sample_id",
+    "tcr_fastq": "$.params.inputs[0].s3|/data/",
+    "tcr_id": "$.params.dataset.paramJson.tcr_id",
+    "vdj_reference": "$.params.inputs[0].s3|/data/"
+}

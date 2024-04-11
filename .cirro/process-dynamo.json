@@ -1,0 +1,17 @@
+{
+    "childProcessIds": [],
+    "code": {
+        "repository": "GITHUBPUBLIC",
+        "script": "main.nf",
+        "uri": "shahcompbio/scrna_demultiplexing",
+        "version": "main"
+    },
+    "desc": "scrna demultiplexing pipeline based on 10x  analysis blog for 5prime pooled libraries",
+    "documentationUrl": "",
+    "executor": "NEXTFLOW",
+    "id": "process-btc-scrna-demultiplexing-1-0",
+    "name": "scrna-demultiplexing",
+    "parentProcessIds": [
+        "single-cell-10X"
+    ]
+}

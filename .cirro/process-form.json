@@ -1,0 +1,37 @@
+{
+    "form": {
+        "properties": {
+            "bcr_id": {
+                "default": "",
+                "description": "bcr_id",
+                "title": "bcr_id",
+                "type": "string"
+            },
+            "cite_id": {
+                "default": "",
+                "description": "cite_id",
+                "title": "cite_id",
+                "type": "string"
+            },
+            "gex_id": {
+                "default": "",
+                "description": "gex id",
+                "title": "gex_id",
+                "type": "string"
+            },
+            "sample_id": {
+                "default": "",
+                "description": "sample_id",
+                "title": "sample_id",
+                "type": "string"
+            },
+            "tcr_id": {
+                "default": "",
+                "description": "tcr_id",
+                "title": "tcr_id",
+                "type": "string"
+            }
+        }
+    },
+    "ui": {}
+}
