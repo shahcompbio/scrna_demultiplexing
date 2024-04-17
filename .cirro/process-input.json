@@ -1,17 +1,17 @@
 {
-    "bcr_fastq": "$.params.inputs[0].s3|/data/",
+    "bcr_fastq": "$.params.inputs[0].s3|/bcr/",
     "bcr_id": "$.params.dataset.paramJson.bcr_id",
-    "cite_fastq": "$.params.inputs[0].s3|/data/",
+    "cite_fastq": "$.params.inputs[0].s3|/cite/",
     "cite_id": "$.params.dataset.paramJson.cite_id",
-    "gex_fastq": "$.params.inputs[0].s3|/data/",
+    "gex_fastq": "$.params.inputs[0].s3|/gex/",
     "gex_id": "$.params.dataset.paramJson.gex_id",
     "jobmode": "local",
-    "meta_yaml": "$.params.inputs[0].s3|/data/",
+    "meta_yaml": "$.params.inputs[0].s3|/meta.yaml",
     "numcores": "16",
-    "outdir": "$.params.dataset.s3|/data/",
-    "reference": "$.params.inputs[0].s3|/data/",
+    "outdir": "$.params.dataset.s3|/results/",
+    "reference": "$.params.inputs[0].s3|/GRCh38",
     "sample_id": "$.params.dataset.paramJson.sample_id",
-    "tcr_fastq": "$.params.inputs[0].s3|/data/",
+    "tcr_fastq": "$.params.inputs[0].s3|/tcr",
     "tcr_id": "$.params.dataset.paramJson.tcr_id",
-    "vdj_reference": "$.params.inputs[0].s3|/data/"
+    "vdj_reference": "$.params.inputs[0].s3|/refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0/"
 }
