@@ -20,7 +20,7 @@ process CELLRANGER_IS_MULTIPLEXED{
             cat ${meta_yaml}
             echo ${bcr_id_opt}
             mode=`cellranger_utils check-multiplex-status --meta_yaml ${meta_yaml} $bcr_id_opt $tcr_id_opt $cite_hto_id_opt`
-            echo ${mode}
+            echo \${mode}
             if [ "\${mode}" = "multiplexed" ]; then
                 echo "1"
             else
