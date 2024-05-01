@@ -2,7 +2,7 @@
 process CELLRANGER_NON_MULTIPLEXED {
     time '96h'
     cpus 16
-    memory '12 GB'
+    memory '160 GB'
     label 'process_high'
 
   input:
