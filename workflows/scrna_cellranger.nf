@@ -11,14 +11,14 @@ if (params.meta_yaml) {meta_yaml = file(params.meta_yaml)} else { exit 1, 'meta 
 
 if (params.sample_id) {sample_id = params.sample_id} else { exit 1, 'sample_id not specified. Please, provide --sample_id <id> !' }
 
-if (params.gex_fastq) {
+if (params.gex_id) {
     gex_fastq = file(params.gex_fastq)
     gex_id = params.gex_id
 } else {
     exit 1, 'gex_fastq not specified!'
 }
 
-if(params.cite_fastq){
+if(params.cite_id){
     cite_fastq = file(params.cite_fastq)
     cite_id = params.cite_id
 } else {
@@ -26,7 +26,7 @@ if(params.cite_fastq){
     cite_id = "NODATA"
 }
 
-if(params.tcr_fastq){
+if(params.tcr_id){
     tcr_fastq = file(params.tcr_fastq)
     tcr_id = params.tcr_id
 } else {
@@ -34,7 +34,7 @@ if(params.tcr_fastq){
     tcr_id = "NODATA"
 }
 
-if(params.bcr_fastq){
+if(params.bcr_id){
     bcr_fastq = file(params.bcr_fastq)
     bcr_id = params.bcr_id
 } else {
