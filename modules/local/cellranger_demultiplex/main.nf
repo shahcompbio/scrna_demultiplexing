@@ -1,7 +1,7 @@
 process CELLRANGER_DEMULTIPLEX {
     time '96h'
     cpus 16
-    memory '12 GB'
+    memory '160 GB'
     label 'process_high'
 
   input:
