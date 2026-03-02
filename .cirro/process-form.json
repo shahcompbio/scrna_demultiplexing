@@ -30,6 +30,12 @@
                 "description": "tcr_id",
                 "title": "tcr_id",
                 "type": "string"
+            },
+            "save_demux_fastqs": {
+                "default": false,
+                "description": "Save demultiplexed FASTQ files per sample",
+                "title": "Save Demux FASTQs",
+                "type": "boolean"
             }
         }
     },
