@@ -65,15 +65,17 @@ workflow CELLRANGER_WF{
     demux_channel = CELLRANGER_DEMULTIPLEX.out.cellranger_sample_outputs.flatten()
     CELLRANGER_BAMTOFASTQ(demux_channel)
 
-    new_channel = CELLRANGER_BAMTOFASTQ.out.map{
-        it -> [
-            it[0], it[1], it[2], tcr_fastq, tcr_id,
-            bcr_fastq, bcr_id, params.cite_fastq, params.cite_id,
-            params.meta_yaml, params.reference,
-            params.vdj_reference
-        ]
-    }
+    if (!params.demux_only) {
+        new_channel = CELLRANGER_BAMTOFASTQ.out.map{
+            it -> [
+                it[0], it[1], it[2], tcr_fastq, tcr_id,
+                bcr_fastq, bcr_id, params.cite_fastq, params.cite_id,
+                params.meta_yaml, params.reference,
+                params.vdj_reference
+            ]
+        }
 
-    CELLRANGER_PER_SAMPLE(new_channel)
+        CELLRANGER_PER_SAMPLE(new_channel)
+    }
 
 }
