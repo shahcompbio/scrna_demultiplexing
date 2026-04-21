@@ -1,5 +1,6 @@
 # scrna demultiplexing workflow
 
+For detailed documentation on how demultiplexing works, including background on multiplexed samples, hashtag oligos, barcode-based FASTQ splitting, and all pipeline options, see **[docs/DEMULTIPLEXING.md](docs/DEMULTIPLEXING.md)**.
 
 
 ## Quickstart

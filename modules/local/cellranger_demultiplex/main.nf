@@ -15,6 +15,7 @@ process CELLRANGER_DEMULTIPLEX {
     val(sample_id)
   output:
     path("demultiplex_output/outs/per_sample_outs/*"), emit: cellranger_sample_outputs
+    path("demultiplex_output/outs/multi/multiplexing_analysis/assignment_confidence_table.csv"), emit: assignment_table
   script:
     def cite_hto_fastq_opt = cite_hto_id != 'NODATA' ? " --cite_hto_fastq ${cite_hto_fastq}" : ''
     def cite_hto_id_opt = cite_hto_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
@@ -35,5 +36,7 @@ process CELLRANGER_DEMULTIPLEX {
   stub:
     """
     mkdir -p demultiplex_output/outs/per_sample_outs/
+    mkdir -p demultiplex_output/outs/multi/multiplexing_analysis/
+    touch demultiplex_output/outs/multi/multiplexing_analysis/assignment_confidence_table.csv
     """
 }
