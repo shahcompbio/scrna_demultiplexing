@@ -1,8 +1,7 @@
 process CELLRANGER_BAMTOFASTQ{
     publishDir "${params.output_dir}/demux_fastqs/${cellranger_dir.baseName}",
         mode: 'copy',
-        enabled: params.save_demux_fastqs ?: false,
-        pattern: 'output/*'
+        enabled: params.save_demux_fastqs ?: false
     time '96h'
     cpus 1
     memory '10 GB'
