@@ -407,7 +407,7 @@ def run_bam_to_fastq(bam_file, metrics, outdir, tempdir):
 
     library_id, gem_group = find_gex_id(bam_file)
 
-    cmd = ['bamtofastq', f'--reads-per-fastq={num_reads+1000000}', bam_file, tempdir]
+    cmd = ['bamtofastq', bam_file, tempdir]
 
     run_cmd(cmd)
 
