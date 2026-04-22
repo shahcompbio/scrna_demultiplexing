@@ -15,7 +15,7 @@ process CELLRANGER_DEMULTIPLEX {
     val(sample_id)
   output:
     path("demultiplex_output/outs/per_sample_outs/*"), emit: cellranger_sample_outputs
-    path("demultiplex_output/outs/multi/multiplexing_analysis/assignment_confidence_table.csv"), emit: assignment_table
+    path("assignment_confidence_table.csv"), emit: assignment_table
   script:
     def cite_hto_fastq_opt = cite_hto_id != 'NODATA' ? " --cite_hto_fastq ${cite_hto_fastq}" : ''
     def cite_hto_id_opt = cite_hto_id != 'NODATA' ? " --cite_hto_id ${cite_hto_id}" : ''
@@ -30,13 +30,21 @@ process CELLRANGER_DEMULTIPLEX {
         --numcores ${task.cpus} \
         --mempercore 10 \
         --sample_id ${sample_id} \
-        $cite_hto_fastq_opt $cite_hto_id_opt \
+        $cite_hto_fastq_opt $cite_hto_id_opt
 
+        # Find assignment_confidence_table.csv regardless of output structure
+        find demultiplex_output -name "assignment_confidence_table.csv" -exec cp {} assignment_confidence_table.csv \\;
+
+        if [ ! -f assignment_confidence_table.csv ]; then
+            echo "ERROR: assignment_confidence_table.csv not found in demultiplex_output" >&2
+            echo "Directory contents:" >&2
+            find demultiplex_output -type f >&2
+            exit 1
+        fi
     """
   stub:
     """
     mkdir -p demultiplex_output/outs/per_sample_outs/
-    mkdir -p demultiplex_output/outs/multi/multiplexing_analysis/
-    touch demultiplex_output/outs/multi/multiplexing_analysis/assignment_confidence_table.csv
+    echo "Barcodes,Assignment,Assignment_Probability" > assignment_confidence_table.csv
     """
 }

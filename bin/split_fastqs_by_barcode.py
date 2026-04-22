@@ -54,10 +54,35 @@ def load_assignment_table(assignment_table_path, min_confidence=0.9):
 
     with open(assignment_table_path, 'r') as f:
         reader = csv.DictReader(f)
+        headers = reader.fieldnames
+
+        # Auto-detect column names (Cell Ranger versions vary)
+        barcode_col = None
+        assignment_col = None
+        confidence_col = None
+
+        for h in headers:
+            hl = h.lower().strip()
+            if hl in ('barcodes', 'barcode'):
+                barcode_col = h
+            elif hl == 'assignment':
+                assignment_col = h
+            elif hl in ('assignment_probability', 'assignment_confidence'):
+                confidence_col = h
+
+        if not barcode_col or not assignment_col or not confidence_col:
+            raise ValueError(
+                f"Could not identify required columns in assignment table. "
+                f"Found headers: {headers}. "
+                f"Need a barcode column, 'Assignment', and a probability/confidence column."
+            )
+
+        print(f"Using columns: barcode='{barcode_col}', assignment='{assignment_col}', confidence='{confidence_col}'")
+
         for row in reader:
-            barcode = row['Barcodes'].strip()
-            assignment = row['Assignment'].strip()
-            confidence = float(row['Assignment_Probability'])
+            barcode = row[barcode_col].strip()
+            assignment = row[assignment_col].strip()
+            confidence = float(row[confidence_col])
 
             # Skip unassigned, multiplets, and blanks
             if assignment in ('Unassigned', 'Multiplet', 'Blank', ''):
